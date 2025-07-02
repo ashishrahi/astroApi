@@ -53,7 +53,6 @@ export const UserListService = async (model) => {
 export const userProfileService = async (model) => {
   try {
     const { id } = model;
-    console.log("id:",id)
     const user = await User.findById(id).select("-password");
     return {
       success: true,
@@ -72,6 +71,7 @@ export const userProfileService = async (model) => {
 export const LoginUserService = async(model) => {
   try {
        const{email, password} = model
+       console.log('model:',model)
        const user = await User.findOne({email:email})
        if (user && (await user.matchPassword(password))) {
         return{
