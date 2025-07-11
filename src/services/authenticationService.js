@@ -1,5 +1,6 @@
 import User from "../models/userModel.js";
 import { generateToken } from "../helpers/helpers.js";
+import Wallet from "../models/walletModel.js";
 
 // RegisterUser service
 export const RegisterUserService = async (model) => {
@@ -13,6 +14,10 @@ export const RegisterUserService = async (model) => {
       };
     }
     const newUser = new User(model);
+    await Wallet.create({
+         user:newUser._id,
+         amount: 0
+    });
     const savedUser = await newUser.save();
     return {
       success: true,
@@ -71,7 +76,6 @@ export const userProfileService = async (model) => {
 export const LoginUserService = async(model) => {
   try {
        const{email, password} = model
-       console.log('model:',model)
        const user = await User.findOne({email:email})
        if (user && (await user.matchPassword(password))) {
         return{
