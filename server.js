@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 import app from './app.js'
 import serverless from 'serverless-http';
-export const handler = serverless(app);
+export default serverless(app);
 import dbConnect from './src/Config/dbConnect.js'
 
 dbConnect()
