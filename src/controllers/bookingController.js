@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes'
 export const createBooking = async(req, res)=>{
     try {
         const model = req.body
+        console.log("booking", req.body)
         const {success, message, data} = await bookingServices.createBooking(model)
         return res.status(StatusCodes.CREATED).json({
             success,

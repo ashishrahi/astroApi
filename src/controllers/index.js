@@ -3,6 +3,7 @@ import {createAstrologerServices, getAstrologerServices, updatedAstrologerServic
 import {registerUsers, getUsers, loginUsers, profileUser} from "../controllers/authController.js"
 import {createBooking, getUserBookings, getAstrologerBookings, updateBookingStatus} from '../controllers/bookingController.js'
 import {getUserKundlis,generateKundli} from '../controllers/kundaliController.js'
+import {getUserDashboard} from '..//controllers/userDashboardController.js'
 
 //  astrologerController
 
@@ -47,3 +48,8 @@ export const kundaliController = {
     generateKundli: generateKundli,
     getUserKundlis: getUserKundlis
 }
+
+export const userDashboardController ={
+    getUserDashboard : getUserDashboard
+}
+

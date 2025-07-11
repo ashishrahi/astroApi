@@ -2,6 +2,8 @@ import {createAstrologerService, getAstrologerService, profileService, updatePro
 import {RegisterUserService, UserListService, LoginUserService, userProfileService } from '../services/authenticationService.js'
 import {createBooking, getUserBookings, getAstrologerBookings, updateBookingStatus} from '../services/bookingService.js'
 import {generateKundaliService, getUserKundlisService} from '../services/KundaliService.js'
+import {getDashboarUserService} from '../services/userDashboardService.js'
+
 // astrologer services
 export const astrologerService = {
     createAstrologerService: createAstrologerService,
@@ -30,5 +32,9 @@ export const bookingServices = {
 export const KundaliService ={
     generateKundaliService:generateKundaliService, 
     getUserKundlisService: getUserKundlisService
+}
+
+export const userDashboardService ={
+    getDashboarUserService:getDashboarUserService, 
 }
 

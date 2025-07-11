@@ -6,6 +6,7 @@ import astrologerServiceRouter from './src/router/astrologerServiceRouter.js'
 import userRouter from './src/router/authRouter.js'
 import BookingRouter from './src/router/bookingRouter.js'
 import KundaliRouter from './src/router/kundaliRouter.js'
+import userDashboardRouter from './src/router/userDashboardRouter.js'
 
 // middleware
 app.use(express.json())
@@ -16,6 +17,8 @@ app.use('/api/v1/astrologer',astrologerRouter)
 app.use('/api/v1/astrologerservice', astrologerServiceRouter)
 app.use('/api/v1/booking', BookingRouter)
 app.use('/api/v1/kundali', KundaliRouter)
+app.use('/api/v1/user-dashboard', userDashboardRouter)
+
 
 
 
