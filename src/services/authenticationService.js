@@ -89,6 +89,11 @@ export const LoginUserService = async(model) => {
                 token: generateToken(user._id)
             }
         }
+       }else{
+        return{
+          success:false,
+          message:"Register Please"
+        }
        }
   } catch (error) {
     return{

@@ -1,8 +1,19 @@
+import Astrologer from "../models/astrologerModel.js";
 import Booking from "../models/bookingModel.js"
+import { notifyUser } from "../services/notificationService.js";
 
 export const createBooking = async(model)=>{
 try {
+    
     const booking = new Booking({...model})
+const astrologer = await Astrologer.findById(booking.astrologer).select("name");    
+     await notifyUser({
+    user: booking.user,
+    title: "Consultation Booked",
+    message: `Your consultation with astrologer ${astrologer.name} is confirmed.`,
+    type: "push"
+  });
+    
     await booking.save()
     return{
         success: true,

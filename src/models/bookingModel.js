@@ -5,15 +5,19 @@ const bookingSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      // required: true,
     },
     astrologer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Astrologer",
-      required: true,
+      // required: true,
     },
-    date: { type: Date, required: true },
-    time: { type: String, required: true },
+    date: { type: Date,
+      //  required: true 
+      },
+    time: { type: String, 
+      // required: true 
+    },
     purpose: { type: String },
     status: {
       type: String,
