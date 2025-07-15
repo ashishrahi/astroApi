@@ -15,7 +15,8 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-  origin: ["http://localhost:5012", "http://127.0.0.1:5500"],
+  origin: ["http://localhost:5012", "http://127.0.0.1:5500, https://client-astro-44k5.vercel.app"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 app.use(express.json());
