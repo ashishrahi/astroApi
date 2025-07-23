@@ -12,11 +12,20 @@ const bookingSchema = new mongoose.Schema(
       ref: "Astrologer",
       // required: true,
     },
-    date: { type: Date,
-      //  required: true 
-      },
-    time: { type: String, 
-      // required: true 
+    roomId: {
+      type: String,
+      required: true,
+    },
+    consultationType: {
+      type: String,
+    },
+    date: {
+      type: Date,
+      //  required: true
+    },
+    time: {
+      type: String,
+      // required: true
     },
     purpose: { type: String },
     status: {
@@ -26,8 +35,14 @@ const bookingSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["unpaid", "paid"],
+      enum: ["unpaid", "paid","refunded"],
       default: "unpaid",
+    },
+    duration: {
+      type: String,
+    },
+    cost: {
+      type: String,
     },
   },
   { timestamps: true }

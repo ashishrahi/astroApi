@@ -36,17 +36,21 @@ export const getAstrologerBookings = async(req, res)=>{
 }
 
 // updatedbooking status
-export const updateBookingStatus = async(req, res)=>{
-    try 
-    {  const {id} = req.params;
-        const {status, paymentStatus} = req.body;
-        const model = {id, status, paymentStatus}
+export const updateBookingStatus = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { status, paymentStatus } = req.body;
 
-        console.log('req',req.params.id)
-        const {success, message, data} = await bookingServices.updateBookingStatus(model)
-        return res.status(StatusCodes.CREATED).json({success, message, data})
-        
-    } catch (error) {
-        return res.status(StatusCodes.BAD_REQUEST).json({success: false, message: error.message})
-    }
-}
+
+    const { success, message, data } = await bookingServices.updateBookingStatus({ id, status, paymentStatus });
+
+    return res
+      .status(success ? StatusCodes.OK : StatusCodes.NOT_FOUND)
+      .json({ success, message, data });
+  } catch (error) {
+    console.error("Error in updateBookingStatus:", error);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ success: false, message: error.message });
+  }
+};

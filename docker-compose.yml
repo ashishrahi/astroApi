@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  atroapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: atroapi
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app                     # live bind mount
+      - /app/node_modules          # avoid overwriting container modules
+    environment:
+      - NODE_ENV=development
+    command: node server.js
+    depends_on:
+      - mongo
+      - redis
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+volumes:
+  mongo-data:

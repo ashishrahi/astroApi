@@ -73,33 +73,53 @@ export const userProfileService = async (model) => {
 };
 
 // Login user service
-export const LoginUserService = async(model) => {
+export const LoginUserService = async (model) => {
   try {
-       const{email, password} = model
-       const user = await User.findOne({email:email})
-       if (user && (await user.matchPassword(password))) {
-        return{
-            success: true,
-            message: 'user successfully login',
-            data:{
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                token: generateToken(user._id)
-            }
-        }
-       }else{
-        return{
-          success:false,
-          message:"Register Please"
-        }
-       }
-  } catch (error) {
-    return{
+    const { email, password } = model;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return {
         success: false,
-        message: error.message
+        message: "User not found. Please register.",
+      };
     }
 
+    // Check if user status is false (inactive)
+    if (!user.status) {
+      return {
+        success: false,
+        message: "Your account is inactive. Please contact admin.",
+      };
+    }
+
+    // Match password
+    const isMatch = await user.matchPassword(password);
+
+    if (!isMatch) {
+      return {
+        success: false,
+        message: "Invalid credentials",
+      };
+    }
+
+    // Successful login
+    return {
+      success: true,
+      message: "User successfully logged in",
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        token: generateToken(user._id),
+      },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Something went wrong",
+    };
   }
 };
+
