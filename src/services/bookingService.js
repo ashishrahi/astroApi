@@ -7,7 +7,7 @@ export const createBooking = async (model) => {
   try {
     const booking = new Booking({ ...model });
 
-    const astrologer = await Astrologer.findById(booking.astrologer).select("name");
+    const astrologer = await Astrologer.findById(booking.astrologerId).select("name");
 
     // Generate roomId based on booking ID
     const roomId = `booking_${booking._id}`;

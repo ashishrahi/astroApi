@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema(
   {
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       // required: true,
     },
-    astrologer: {
+    astrologerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Astrologer",
       // required: true,
@@ -27,7 +27,9 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       // required: true
     },
-    purpose: { type: String },
+    purpose: {
+       type: String 
+      },
     status: {
       type: String,
       enum: ["pending", "confirmed", "cancelled", "completed"],

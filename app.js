@@ -7,6 +7,8 @@ import BookingRouter from './src/router/bookingRouter.js';
 import KundaliRouter from './src/router/kundaliRouter.js';
 import userDashboardRouter from './src/router/userDashboardRouter.js';
 import logger from './src/Config/logger.js'
+import countryRouter from './src/router/countryRouter.js'
+import stateRouter from './src/router/stateRouter.js'
 import './src/Queue/worker/notification.worker.js';
 import { StatusCodes } from 'http-status-codes';
 const app = express();
@@ -26,7 +28,6 @@ app.use(cors({
 }));
 
 app.use(express.json());
-
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet({
     contentSecurityPolicy: true,
@@ -43,17 +44,19 @@ app.use(morgan("dev"));
 app.use((err, req, res, next)=>{
   logger.error(err.stack);
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    error:"Internal Server Error"
+    error:err.message
   })
 })
 
 
 // Routes
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/astrologer', astrologerRouter);
-app.use('/api/v1/astrologerservice', astrologerServiceRouter);
-app.use('/api/v1/booking', BookingRouter);
-app.use('/api/v1/kundali', KundaliRouter);
-app.use('/api/v1/user-dashboard', userDashboardRouter);
+app.use('/api/v1/country' ,countryRouter)
+app.use('/api/v1/state' ,stateRouter)
+app.use('/api/v1/users' ,userRouter);
+app.use('/api/v1/astrologers' ,astrologerRouter);
+app.use('/api/v1/astrologerservice' ,astrologerServiceRouter);
+app.use('/api/v1/booking' ,BookingRouter);
+app.use('/api/v1/kundali' ,KundaliRouter);
+app.use('/api/v1/user-dashboard' ,userDashboardRouter);
 
 export default app;

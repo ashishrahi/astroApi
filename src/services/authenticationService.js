@@ -1,31 +1,32 @@
 import User from "../models/userModel.js";
 import { generateToken } from "../helpers/helpers.js";
 import Wallet from "../models/walletModel.js";
+import { createUser, findUserByEmail } from "../repository/userRepository.js";
 
 // RegisterUser service
 export const RegisterUserService = async (model) => {
   try {
     const { email } = model;
-    const userExists = await User.findOne({ email });
+    // validation
+    const userExists = findUserByEmail(email);
     if (userExists) {
       return {
         success: false,
         message: "user already exist",
       };
     }
-    const newUser = new User(model);
-    await Wallet.create({
-         user:newUser._id,
-         amount: 0
-    });
-    const savedUser = await newUser.save();
+    // create User
+    const newUser = createUser(model);
+    // create wallet of User
+    await createWallet({ user: newUser._id });
+    //  response of user
     return {
       success: true,
       message: "user registered successfully",
       data: {
-        _id: savedUser._id,
-        name: savedUser.name,
-        email: savedUser.email,
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
         token: generateToken(savedUser._id),
       },
     };
@@ -122,4 +123,3 @@ export const LoginUserService = async (model) => {
     };
   }
 };
-

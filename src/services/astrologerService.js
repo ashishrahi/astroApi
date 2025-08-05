@@ -1,7 +1,10 @@
 import Astrologer from "../models/astrologerModel.js"
+import { astrologerValidationSchema } from "../validators/astrologerJoi.js"
+
 
 export const createAstrologerService = async(model)=>{
     try {
+           
         const newAstrologer = new Astrologer(model)
         await newAstrologer.save()
         return{

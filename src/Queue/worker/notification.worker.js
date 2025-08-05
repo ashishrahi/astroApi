@@ -17,10 +17,6 @@ export const notificationWorker = new Worker(
       message,
       type,
     });
-
-  console.log('notification', notification)
-
-
     const io = getIO();
     if (io) {
       io.to(user.toString()).emit("notification", 

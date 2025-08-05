@@ -1,17 +1,31 @@
 import mongoose from "mongoose";
 
 const kundliSchema = new mongoose.Schema({
-  user: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  name: String,
-  gender: String,
-  dob: String,
-  tob: String,
-  lat: Number,
-  lon: Number,
-  timezone: String,
+  name: {
+       type: String
+        },
+  gender: {
+         type:String
+        },
+  dateOfBirth: {
+        type: String
+      },
+  timeOfBirth: {
+        type: String
+      },
+  latitude: {
+        type:Number
+      },
+  longitude: {
+       type:Number
+      },
+  timeZone: {
+        type: String
+      },
   kundliData: mongoose.Schema.Types.Mixed,
 }, { timestamps: true });
 

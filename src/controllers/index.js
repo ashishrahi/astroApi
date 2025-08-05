@@ -3,10 +3,10 @@ import {createAstrologerServices, getAstrologerServices, updatedAstrologerServic
 import {registerUsers, getUsers, loginUsers, profileUser} from "../controllers/authController.js"
 import {createBooking, getUserBookings, getAstrologerBookings, updateBookingStatus} from '../controllers/bookingController.js'
 import {getUserKundlis,generateKundli} from '../controllers/kundaliController.js'
-import {getUserDashboard} from '..//controllers/userDashboardController.js'
-
+import {getUserDashboard} from '../controllers/userDashboardController.js'
+import {createCountry, getCountry, updateCountry, deleteCountry} from '../controllers/countryController.js'
+import {createState, getStates, updatedState, deleteStates} from '../controllers/stateController.js'
 //  astrologerController
-
 export const astrologerController = {
     createAstrologer: createAstrologer,
     getAstrologer: getAstrologer,
@@ -16,7 +16,6 @@ export const astrologerController = {
 }
 
 //  astrologerServiceController
-
 export const astrologerServiceController = { 
     createAstrologerServices: createAstrologerServices,
     getAstrologerServices: getAstrologerServices,
@@ -25,7 +24,6 @@ export const astrologerServiceController = {
 }
 
 // userAuthentication
-
 export const authenticationController = {
     registerUsers : registerUsers,
     getUsers: getUsers,
@@ -34,7 +32,6 @@ export const authenticationController = {
 }
 
 // bookingController
-
 export const bookingController = {
     createBooking: createBooking,
     getUserBookings: getUserBookings,
@@ -43,13 +40,25 @@ export const bookingController = {
 }
 
 // kundaliController
-
 export const kundaliController = {
     generateKundli: generateKundli,
     getUserKundlis: getUserKundlis
 }
 
-export const userDashboardController ={
+export const userDashboardController = {
     getUserDashboard : getUserDashboard
 }
 
+export const countryController = {
+    createCountry : createCountry,
+    getCountry : getCountry,
+    updateCountry : updateCountry,
+    deleteCountry : deleteCountry
+}
+
+export const stateController = {
+    createState : createState,
+    getStates : getStates,
+    updatedState : updatedState,
+    deleteStates : deleteStates
+}

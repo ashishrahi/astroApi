@@ -1,14 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
 import {astrologerService} from '../services/index.js' 
-import { astrologerValidationSchema } from "../validators/astrologerJoi.js"
 
 
 export const createAstrologer= async(req, res)=>{
 try {
     const model = req.body
 
-    const { error } = astrologerValidationSchema.validate(req.body);
-    if (error) return res.status(StatusCodes.BAD_REQUEST).json({ error: error.details[0].message });
     const {success, message, data} = await astrologerService.createAstrologerService(model)
     return res.status(201).json({
         success,
@@ -61,8 +58,6 @@ export const profileAstrologer = async(req, res) =>{
 export const updateAstrologerProfile = async(req, res)=>{
     try {
         const model = req.params;
-        const { error } = updateAstrologerSchema.validate(req.body);
-        if (error) return res.status(StatusCodes.BAD_REQUEST).json({ error: error.details[0].message });
         const{success, message, data} = await astrologerService.updateProfileService(model)
         res.status(201).json({
             success,
