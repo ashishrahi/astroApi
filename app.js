@@ -9,6 +9,7 @@ import userDashboardRouter from './src/router/userDashboardRouter.js';
 import logger from './src/Config/logger.js'
 import countryRouter from './src/router/countryRouter.js'
 import stateRouter from './src/router/stateRouter.js'
+import cityRouter from './src/router/cityRouter.js'
 import './src/Queue/worker/notification.worker.js';
 import { StatusCodes } from 'http-status-codes';
 const app = express();
@@ -52,6 +53,7 @@ app.use((err, req, res, next)=>{
 // Routes
 app.use('/api/v1/country' ,countryRouter)
 app.use('/api/v1/state' ,stateRouter)
+app.use('/api/v1/city' ,cityRouter)
 app.use('/api/v1/users' ,userRouter);
 app.use('/api/v1/astrologers' ,astrologerRouter);
 app.use('/api/v1/astrologerservice' ,astrologerServiceRouter);

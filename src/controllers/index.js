@@ -6,6 +6,7 @@ import {getUserKundlis,generateKundli} from '../controllers/kundaliController.js
 import {getUserDashboard} from '../controllers/userDashboardController.js'
 import {createCountry, getCountry, updateCountry, deleteCountry} from '../controllers/countryController.js'
 import {createState, getStates, updatedState, deleteStates} from '../controllers/stateController.js'
+import { createCity, getCity } from "./cityController.js"
 //  astrologerController
 export const astrologerController = {
     createAstrologer: createAstrologer,
@@ -61,4 +62,9 @@ export const stateController = {
     getStates : getStates,
     updatedState : updatedState,
     deleteStates : deleteStates
+}
+
+export const cityController = {
+    createCity : createCity,
+    getCity : getCity
 }

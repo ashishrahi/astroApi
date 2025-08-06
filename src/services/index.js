@@ -5,6 +5,10 @@ import {generateKundaliService, getUserKundlisService} from '../services/Kundali
 import {getDashboarUserService} from '../services/userDashboardService.js'
 import {createCountryService, getCountryService, updateCountryService, deleteCountryService} from '../services/countryService.js'
 import {createStateService, getStateService, updatedStateService, deleteStateService} from '../services/stateService.js'
+import {createcityService, getCityService} from '../services/cityService.js'
+
+
+
 // astrologer services
 export const astrologerService = {
 
@@ -59,4 +63,9 @@ export const stateService = {
     getStateService : getStateService,
     updatedStateService : updatedStateService,
     deleteStateService : deleteStateService
+}
+
+export const cityService = {
+   createcityService : createcityService,
+   getCityService : getCityService
 }

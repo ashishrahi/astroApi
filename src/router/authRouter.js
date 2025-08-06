@@ -5,9 +5,9 @@ import {userValidationSchema} from '../validators/userJoi.js'
 import express from 'express'
 const router = express.Router()
 
-router.post('/register', validate(userValidationSchema) ,authenticationController.registerUsers)
+router.post('/register',authenticationController.registerUsers)
 router.get('/' ,authenticationController.getUsers)
-router.post('/login', validate(userValidationSchema) ,authenticationController.loginUsers)
+router.post('/login', authenticationController.loginUsers)
 router.get('/profile', protect ,authenticationController.profileUser)
 
 export default router
