@@ -7,16 +7,21 @@ import { createUser, findUserByEmail } from "../repository/userRepository.js";
 export const RegisterUserService = async (model) => {
   try {
     const { email } = model;
-    // validation
-    const userExists = findUserByEmail(email);
+    console.info('model0:', model)
+
+    validation
+    const userExists = await findUserByEmail(email);
     if (userExists) {
+      console.info("User already exists, skipping creation:", userExists);
       return {
         success: false,
         message: "user already exist",
       };
     }
     // create User
-    const newUser = createUser(model);
+    console.info('model1:', model)
+
+    const newUser = await createUser(model);
     // create wallet of User
     await createWallet({ user: newUser._id });
     //  response of user
