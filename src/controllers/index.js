@@ -1,7 +1,7 @@
 import { createAstrologer, getAstrologer, profileAstrologer, updateAstrologerProfile, toggleAvailability} from "../controllers/astrologerController.js"
 import {createAstrologerServices, getAstrologerServices, updatedAstrologerServices, deletedAstrologerServices } from '../controllers/astrologerServiceController.js'
-import {registerUsers, getUsers, loginUsers, profileUser} from "../controllers/authController.js"
-import {createBooking, getUserBookings, getAstrologerBookings, updateBookingStatus} from '../controllers/bookingController.js'
+import {registerUsers, getUsers, loginUsers, profileUser, updateUser} from "../controllers/authController.js"
+import {createBooking, getBookings, getAstrologerBookings, updateBookingStatus} from '../controllers/bookingController.js'
 import {getUserKundlis,generateKundli} from '../controllers/kundaliController.js'
 import {getUserDashboard} from '../controllers/userDashboardController.js'
 import {createCountry, getCountry, updateCountry, deleteCountry} from '../controllers/countryController.js'
@@ -29,13 +29,14 @@ export const authenticationController = {
     registerUsers : registerUsers,
     getUsers: getUsers,
     loginUsers: loginUsers,
-    profileUser: profileUser
+    profileUser: profileUser,
+    updateUser : updateUser
 }
 
 // bookingController
 export const bookingController = {
     createBooking: createBooking,
-    getUserBookings: getUserBookings,
+    getBookings: getBookings,
     getAstrologerBookings: getAstrologerBookings,
     updateBookingStatus: updateBookingStatus,
 }

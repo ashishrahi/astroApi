@@ -2,6 +2,7 @@ import Astrologer from "../models/astrologerModel.js";
 import Booking from "../models/bookingModel.js"
 import { notifyUser } from "../services/notificationService.js";
 import { ChatRoom } from "../models/ChatRoom.js";
+import { BookingListQuery } from "../repository/bookingRepository.js";
 
 export const createBooking = async (model) => {
   try {
@@ -47,11 +48,16 @@ export const createBooking = async (model) => {
   }
 };
 
-export const getUserBookings = (model) =>{
+export const getBookingService = async(model) =>{
     try {
-        const model = req.params
+        const bookingList = await BookingListQuery(model)
+        return {
+          success:true,
+          message:"list of booking",
+        data: bookingList
+        }
     } catch (error) {
-        
+        throw new Error(error.message)
     }
 
 }

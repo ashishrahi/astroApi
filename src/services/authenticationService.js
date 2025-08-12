@@ -1,7 +1,7 @@
 import User from "../models/userModel.js";
 import { generateToken } from "../helpers/helpers.js";
 import Wallet from "../models/walletModel.js";
-import { createUser, findUserByEmail } from "../repository/userRepository.js";
+import { createUser, getUserQuery ,findUserByEmail, UserUpdateQuery } from "../repository/userRepository.js";
 
 // RegisterUser service
 export const RegisterUserService = async (model) => {
@@ -42,11 +42,14 @@ export const RegisterUserService = async (model) => {
 // UserList service
 export const UserListService = async (model) => {
   try {
-    const userList = await User.find();
+    const {data, total, page, pages} = await getUserQuery(model);
     return {
       success: true,
       message: "user list fetch successfully",
-      data: userList,
+      data:data,
+      total: total,
+      page: page,
+      pages: pages
     };
   } catch (error) {
     return {
@@ -124,3 +127,17 @@ export const LoginUserService = async (model) => {
     };
   }
 };
+
+export const updateUserService = async(model, id)=>{
+  try {
+
+      const updatedUser = await UserUpdateQuery(model, id)
+      return{
+        success: true,
+        message: "user updated successfully",
+        data: updatedUser
+      }
+  } catch (error) {
+    throw new Error(error.message)
+  }
+}

@@ -12,7 +12,11 @@ const userSchema = new mongoose.Schema(
      status: {
     type: String,
     default: true,
-  },
+       },
+    astrologerId:{
+      type: String,
+      default: null
+    },
     role: {
       type: String,
       enum: ["user", "astrologer", "admin"],

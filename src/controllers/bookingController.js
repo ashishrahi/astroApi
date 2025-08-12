@@ -16,11 +16,13 @@ export const createBooking = async(req, res)=>{
     }
 }
 //  get booking
-export const getUserBookings =(req, res)=>{
+export const getBookings = async(req, res)=>{
     try {
-        
+        const model = req.query;
+        const {success, message, data} = await bookingServices.getBookingService(model)
+        res.status(StatusCodes.OK).json({success, message, data}) 
     } catch (error) {
-        
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({success:false, message: error.message})
     }
 }
 

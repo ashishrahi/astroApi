@@ -1,12 +1,11 @@
 import Astrologer from "../models/astrologerModel.js"
-import { astrologerValidationSchema } from "../validators/astrologerJoi.js"
+import { createAstrologerQuery, AstrologerListQuery } from "../repository/astrologerRepository.js"
 
 
 export const createAstrologerService = async(model)=>{
     try {
            
-        const newAstrologer = new Astrologer(model)
-        await newAstrologer.save()
+        const newAstrologer = await createAstrologerQuery(model)
         return{
             success: true,
             message: "astrologer created successfully",
@@ -21,9 +20,9 @@ export const createAstrologerService = async(model)=>{
     }
 }
 
-export const getAstrologerService = async()=>{
+export const getAstrologerService = async(model)=>{
     try {
-        const listAstrologer = await Astrologer.find()
+        const listAstrologer = await AstrologerListQuery(model)
         return{
             success: true,
             message: 'list of astrologer',
@@ -55,10 +54,9 @@ export const profileService = async(model)=>{
     }
 }
 
-export const updateProfileService = async(model)=>{
+export const updateProfileService = async(model,id)=>{
     try {
-          const {id}= model
-        const updatedProfile = await Astrologer.findByIdAndUpdate(id, req.body,{new: true})
+        const updatedProfile = await Astrologer.findByIdAndUpdate(id, model,{new: true})
         return{
             success: true,
             message: "profile updated successfully",

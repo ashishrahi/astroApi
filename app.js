@@ -19,7 +19,9 @@ import helmet from 'helmet';
 // Middlewares
 app.use(cors({
   origin: [
+    "http://localhost:5013",
     "http://localhost:5012",
+
     "http://127.0.0.1:5500",
     "https://client-astro-44k5.vercel.app",
     "http://localhost:5174"

@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import { authenticationService } from "../services/index.js";
 //  Registration of Users
 export const registerUsers = async (req, res) => {
@@ -19,11 +20,12 @@ export const registerUsers = async (req, res) => {
 
 export const getUsers = async (req, res) => {
   try {
-    const { success, message, data } =
-      await authenticationService.UserListService();
-    return res.status(200).json({ success, message, data });
+         const model = req.query
+    const { success, message, data, total, page, pages } =
+      await authenticationService.UserListService(model);
+    return res.status(StatusCodes.OK).json({ success, message, data, total, page, pages });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
   }
 };
 
@@ -49,3 +51,15 @@ export const loginUsers = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// update user
+export const updateUser = async(req, res)=>{
+  try {
+     const {id} = req.params;
+     const model = req.body;
+     const {success, message, data} = await authenticationService.updateUserService(model, id)
+     res.status(StatusCodes.OK).json({success, message, data})
+  } catch (error) {
+     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({success:false, message:error.message});
+  }
+}

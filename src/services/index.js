@@ -1,6 +1,6 @@
 import {createAstrologerService, getAstrologerService, profileService, updateProfileService, toggleAvailabilityService} from '../services/astrologerService.js'
-import {RegisterUserService, UserListService, LoginUserService, userProfileService } from '../services/authenticationService.js'
-import {createBooking, getUserBookings, getAstrologerBookings, updateBookingStatus} from '../services/bookingService.js'
+import {RegisterUserService, UserListService, LoginUserService, userProfileService, updateUserService } from '../services/authenticationService.js'
+import {createBooking, getBookingService, getAstrologerBookings, updateBookingStatus} from '../services/bookingService.js'
 import {generateKundaliService, getUserKundlisService} from '../services/KundaliService.js'
 import {getDashboarUserService} from '../services/userDashboardService.js'
 import {createCountryService, getCountryService, updateCountryService, deleteCountryService} from '../services/countryService.js'
@@ -25,14 +25,15 @@ export const authenticationService = {
     RegisterUserService: RegisterUserService,
     UserListService: UserListService,
     LoginUserService: LoginUserService,
-    userProfileService: userProfileService
+    userProfileService: userProfileService,
+    updateUserService: updateUserService
 }
 
 // booking services
 export const bookingServices = {
 
     createBooking: createBooking,
-    getUserBookings: getUserBookings,
+    getBookingService: getBookingService,
     getAstrologerBookings: getAstrologerBookings,
     updateBookingStatus: updateBookingStatus
 }
