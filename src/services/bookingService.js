@@ -1,5 +1,5 @@
 import Astrologer from "../models/astrologerModel.js";
-import Booking from "../models/bookingModel.js"
+import Booking from "../models/bookingModel.js";
 import { notifyUser } from "../services/notificationService.js";
 import { ChatRoom } from "../models/ChatRoom.js";
 import { BookingListQuery } from "../repository/bookingRepository.js";
@@ -8,7 +8,9 @@ export const createBooking = async (model) => {
   try {
     const booking = new Booking({ ...model });
 
-    const astrologer = await Astrologer.findById(booking.astrologerId).select("name");
+    const astrologer = await Astrologer.findById(booking.astrologerId).select(
+      "name"
+    );
 
     // Generate roomId based on booking ID
     const roomId = `booking_${booking._id}`;
@@ -20,13 +22,13 @@ export const createBooking = async (model) => {
     await ChatRoom.create({
       roomId,
       bookingId: booking._id,
-      userId: booking.user,
-      astrologerId: booking.astrologer,
+      userId: booking.userId,
+      astrologerId: booking.astrologerId,
     });
 
     // Notify user
     await notifyUser({
-      user: booking.user,
+      user: booking.userId,
       title: "Consultation Booked",
       message: `Your consultation with astrologer is confirmed.`,
       type: "push",
@@ -48,44 +50,42 @@ export const createBooking = async (model) => {
   }
 };
 
-export const getBookingService = async(model) =>{
-    try {
-        const bookingList = await BookingListQuery(model)
-        return {
-          success:true,
-          message:"list of booking",
-        data: bookingList
-        }
-    } catch (error) {
-        throw new Error(error.message)
-    }
+export const getBookingService = async (model) => {
+  try {
+    const bookingList = await BookingListQuery(model);
+    return {
+      success: true,
+      message: "list of booking",
+      data: bookingList,
+    };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
-}
- 
-export const getAstrologerBookings = async(model)=>{
-    try {
-        const {id} = model
-        const bookings = await Booking.find({astrologer:id}).populate([ 
-            { path: "user", select: "name email" },
-            { path: "astrologer", select: "name rating" }])
+export const getAstrologerBookings = async (model) => {
+  try {
+    const { id } = model;
+    const bookings = await Booking.find({ astrologer: id }).populate([
+      { path: "user", select: "name email" },
+      { path: "astrologer", select: "name rating" },
+    ]);
 
-        return{
-            success: true,
-            message: 'astrologer bookings',
-            data: bookings
-              }
-    } catch (error) {
-        return{
-            success: false,
-            message: error.message
-        }
-    }
-
-}
+    return {
+      success: true,
+      message: "astrologer bookings",
+      data: bookings,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
+};
 
 export const updateBookingStatus = async ({ id, status, paymentStatus }) => {
   try {
-
     const booking = await Booking.findById(id);
     if (!booking) {
       return {
