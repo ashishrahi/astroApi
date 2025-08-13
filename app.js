@@ -23,7 +23,7 @@ app.use(cors({
     "http://localhost:5012",
 
     "http://127.0.0.1:5500",
-    "https://client-astro-44k5.vercel.app",
+    "https://astroapi-1.onrender.com",
     "http://localhost:5174"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
