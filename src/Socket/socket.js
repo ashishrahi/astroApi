@@ -4,18 +4,15 @@ import { Server } from "socket.io";
 let io;
 
 export function setupSocket(server) {
-  io = new Server(server, {
-    cors: {
-      origin: ["http://localhost:5012", "http://127.0.0.1:5500","http://localhost:5174"],
-      credentials: true
-    }
+   io = new Server(server, {
+    cors: { origin: "*" }, // adjust for your client
   });
 
   io.on("connection", (socket) => {
-    const user = socket.handshake.query.user;
-    if (user) {
-      socket.join(user.toString());
-      console.log(`🔌 User connected: ${user}`);
+    const {userId} = socket.handshake.query;
+    if (userId) {
+      socket.join(userId.toString());
+      console.log(`🔌 User connected: ${userId}`);
     }
 
       // ✉️ Receive message and broadcast

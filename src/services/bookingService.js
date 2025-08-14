@@ -7,9 +7,10 @@ import { BookingListQuery } from "../repository/bookingRepository.js";
 export const createBooking = async (model) => {
   try {
     const booking = new Booking({ ...model });
+    console.log('booking:', booking)
 
     const astrologer = await Astrologer.findById(booking.astrologerId).select(
-      "name"
+     "name"
     );
 
     // Generate roomId based on booking ID
@@ -28,12 +29,11 @@ export const createBooking = async (model) => {
 
     // Notify user
     await notifyUser({
-      user: booking.userId,
+      userId: booking.userId,
       title: "Consultation Booked",
       message: `Your consultation with astrologer is confirmed.`,
       type: "push",
     });
-
     // Save the booking (after adding roomId)
     await booking.save();
 
