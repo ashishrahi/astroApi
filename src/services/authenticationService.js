@@ -1,8 +1,8 @@
 import User from "../models/userModel.js";
-import { generateToken } from "../helpers/helpers.js";
+import { generateAccessToken, generateRefreshToken } from "../helpers/helpers.js";
 import Wallet from "../models/walletModel.js";
 import { createUser, getUserQuery ,findUserByEmail, UserUpdateQuery } from "../repository/userRepository.js";
-
+import bcrypt from 'bcrypt'
 // RegisterUser service
 export const RegisterUserService = async (model) => {
   try {
@@ -19,7 +19,8 @@ export const RegisterUserService = async (model) => {
     // create User
     const newUser = await createUser(model);
     // create wallet of User
-    await new Wallet({ user: newUser._id });
+    const newWallet =  new Wallet({ userId: newUser._id });
+    newWallet.save()
     //  response of user
     return {
       success: true,
@@ -28,7 +29,7 @@ export const RegisterUserService = async (model) => {
         _id: newUser._id,
         name: newUser.name,
         email: newUser.email,
-        token: generateToken(savedUser._id),
+        token: generateAccessToken(newUser._id),
       },
     };
   } catch (error) {
@@ -59,65 +60,57 @@ export const UserListService = async (model) => {
   }
 };
 
-// userProfileService
-export const userProfileService = async (model) => {
-  try {
-    const { id } = model;
-    const user = await User.findById(id).select("-password");
-    return {
-      success: true,
-      message: "profile successfully fetched",
-      data: user,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: error.message,
-    };
-  }
-};
 
 // Login user service
-export const LoginUserService = async (model) => {
+export const LoginUserService = async (model, res) => {
   try {
     const { email, password } = model;
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return {
-        success: false,
-        message: "User not found. Please register.",
-      };
+    const userfind = await User.findOne({ email });
+console.log(userfind)
+    if (!userfind) {
+      return { success: false, message: "User not found. Please register." };
     }
 
-    // Check if user status is false (inactive)
-    if (!user.status) {
-      return {
-        success: false,
-        message: "Your account is inactive. Please contact admin.",
-      };
+    if (!userfind.status) {
+      return { success: false, message: "Your account is inactive. Please contact admin." };
     }
 
-    // Match password
-    const isMatch = await user.matchPassword(password);
-
+    const isMatch = await userfind.matchPassword(password);
     if (!isMatch) {
-      return {
-        success: false,
-        message: "Invalid credentials",
-      };
+      return { success: false, message: "Invalid credentials" };
     }
 
-    // Successful login
+    // Generate tokens
+    const accessToken = generateAccessToken(userfind._id);
+    const refreshTokenRaw = generateRefreshToken(userfind._id);
+
+    // Hash refresh token before saving
+    const refreshTokenHash = bcrypt.hashSync(refreshTokenRaw, 12);
+    userfind.refreshTokens.push({
+      tokenHash: refreshTokenHash,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    });
+
+    await userfind.save();
+
+    // Set refresh token in HTTP-only cookie
+    res.cookie("rt", refreshTokenRaw, {
+      httpOnly: true,
+      secure: true,         // HTTPS only
+      sameSite: "strict",   // Prevent CSRF
+      path: "/auth/refresh",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
     return {
       success: true,
       message: "User successfully logged in",
       data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        token: generateToken(user._id),
+        _id: userfind._id,
+        name: userfind.name,
+        email: userfind.email,
+        role: userfind.role,
+        accessToken,
       },
     };
   } catch (error) {
@@ -127,6 +120,70 @@ export const LoginUserService = async (model) => {
     };
   }
 };
+
+export const refreshTokenHandlerService = async (model) => {
+  try {
+    const refreshTokenRaw = model
+    if (!refreshTokenRaw) {
+      return { success: false, message: "Missing refresh token" };
+    }
+
+    // Find user by refresh token hash
+    const user = await User.findOne({ "refreshTokens.revokedAt": { $exists: false } });
+    console.log('user:', user)
+
+    if (!user) {
+      return { success: false, message: "Invalid refresh token" }
+    }
+
+    const tokenIndex = user.refreshTokens.findIndex(rt =>
+      !rt.revokedAt && bcrypt.compareSync(refreshTokenRaw, rt.tokenHash)
+    );
+
+    if (tokenIndex === -1) {
+      // Token reuse detected — revoke all
+      user.refreshTokens.forEach(t => { t.revokedAt = new Date(); t.reason = "suspected-reuse"; });
+      await user.save();
+      return { success: false, message: "Token reuse detected" }
+    }
+
+    const currentToken = user.refreshTokens[tokenIndex];
+    if (currentToken.expiresAt < new Date()) {
+      currentToken.revokedAt = new Date();
+      currentToken.reason = "expired";
+      await user.save();
+      return { success: false, message: "Refresh token expired" }
+    }
+
+    // Rotate token
+    const newAccessToken = generateAccessToken(user._id);
+    const newRefreshTokenRaw = generateRefreshToken(user._id);
+    const newRefreshTokenHash = bcrypt.hashSync(newRefreshTokenRaw, 12);
+
+    currentToken.revokedAt = new Date();
+    currentToken.reason = "rotated";
+
+    user.refreshTokens.push({ tokenHash: newRefreshTokenHash, expiresAt: new Date(Date.now() + 30*24*60*60*1000) });
+    await user.save();
+
+    res.cookie("rt", newRefreshTokenRaw, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/auth/refresh",
+      maxAge: 30*24*60*60*1000,
+    });
+
+    return { success: true, accessToken: newAccessToken }
+  } catch (err) {
+    return { success: false, message: err.message }
+  }
+};
+
+
+
+
+
 
 export const updateUserService = async(model, id)=>{
   try {

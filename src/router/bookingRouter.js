@@ -5,7 +5,6 @@ import { bookingController } from '../controllers/index.js'
 
 router.post('/create',  bookingController.createBooking)
 router.get('/', bookingController.getBookings)
-router.get('/astrologer/:id',  bookingController.getAstrologerBookings)
-router.put('/update/:id', bookingController.updateBookingStatus)
+router.put('/update/:id', bookingController.updateBooking)
 
 export default router

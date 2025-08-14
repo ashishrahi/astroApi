@@ -7,7 +7,6 @@ import { BookingListQuery } from "../repository/bookingRepository.js";
 export const createBooking = async (model) => {
   try {
     const booking = new Booking({ ...model });
-    console.log('booking:', booking)
 
     const astrologer = await Astrologer.findById(booking.astrologerId).select(
      "name"
@@ -63,29 +62,11 @@ export const getBookingService = async (model) => {
   }
 };
 
-export const getAstrologerBookings = async (model) => {
-  try {
-    const { id } = model;
-    const bookings = await Booking.find({ astrologer: id }).populate([
-      { path: "user", select: "name email" },
-      { path: "astrologer", select: "name rating" },
-    ]);
 
-    return {
-      success: true,
-      message: "astrologer bookings",
-      data: bookings,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: error.message,
-    };
-  }
-};
 
-export const updateBookingStatus = async ({ id, status, paymentStatus }) => {
+export const updateBooking = async (id, payload) => {
   try {
+    const {status, paymentStatus} = payload;
     const booking = await Booking.findById(id);
     if (!booking) {
       return {

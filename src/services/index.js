@@ -1,12 +1,12 @@
-import {createAstrologerService, getAstrologerService, profileService, updateProfileService, toggleAvailabilityService} from '../services/astrologerService.js'
-import {RegisterUserService, UserListService, LoginUserService, userProfileService, updateUserService } from '../services/authenticationService.js'
-import {createBooking, getBookingService, getAstrologerBookings, updateBookingStatus} from '../services/bookingService.js'
+import {createAstrologerService, getAstrologerService, profileService, updateAstrologerService, toggleAvailabilityService, deleteService} from '../services/astrologerService.js'
+import {RegisterUserService, UserListService, LoginUserService,  updateUserService, refreshTokenHandlerService } from '../services/authenticationService.js'
+import {createBooking, getBookingService,  updateBooking} from '../services/bookingService.js'
 import {generateKundaliService, getUserKundlisService} from '../services/KundaliService.js'
 import {getDashboarUserService} from '../services/userDashboardService.js'
 import {createCountryService, getCountryService, updateCountryService, deleteCountryService} from '../services/countryService.js'
 import {createStateService, getStateService, updatedStateService, deleteStateService} from '../services/stateService.js'
 import {createcityService, getCityService} from '../services/cityService.js'
-
+import { createServiceList, getServiceList, updateServiceList, deleteServiceList } from './ServiceListService.js'
 
 
 // astrologer services
@@ -15,8 +15,9 @@ export const astrologerService = {
     createAstrologerService: createAstrologerService,
     getAstrologerService: getAstrologerService,
     profileService: profileService,
-    updateProfileService: updateProfileService,
-    toggleAvailabilityService: toggleAvailabilityService
+    updateAstrologerService: updateAstrologerService,
+    toggleAvailabilityService: toggleAvailabilityService,
+    deleteService: deleteService
 }
 
 // authentication services
@@ -25,8 +26,8 @@ export const authenticationService = {
     RegisterUserService: RegisterUserService,
     UserListService: UserListService,
     LoginUserService: LoginUserService,
-    userProfileService: userProfileService,
-    updateUserService: updateUserService
+    updateUserService: updateUserService,
+    refreshTokenHandlerService : refreshTokenHandlerService
 }
 
 // booking services
@@ -34,8 +35,7 @@ export const bookingServices = {
 
     createBooking: createBooking,
     getBookingService: getBookingService,
-    getAstrologerBookings: getAstrologerBookings,
-    updateBookingStatus: updateBookingStatus
+    updateBooking: updateBooking
 }
 
 // Kundali services
@@ -69,4 +69,11 @@ export const stateService = {
 export const cityService = {
    createcityService : createcityService,
    getCityService : getCityService
+}
+
+export const astrologerServiceListService = {
+    createServiceList: createServiceList,
+    getServiceList: getServiceList,
+    updateServiceList : updateServiceList,
+    deleteServiceList : deleteServiceList
 }

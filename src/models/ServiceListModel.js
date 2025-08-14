@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const astrologerServiceSchema = new mongoose.Schema(
+const serviceListSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -15,9 +15,9 @@ const astrologerServiceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const AstrologerService = mongoose.model(
-  "AstrologerService",
-  astrologerServiceSchema
+const ServiceList = mongoose.model(
+  "ServiceList",
+  serviceListSchema
 );
 
-export default AstrologerService;
+export default ServiceList;

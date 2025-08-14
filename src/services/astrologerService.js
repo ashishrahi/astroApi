@@ -54,12 +54,12 @@ export const profileService = async(model)=>{
     }
 }
 
-export const updateProfileService = async(model,id)=>{
+export const updateAstrologerService = async(id, model)=>{
     try {
         const updatedProfile = await Astrologer.findByIdAndUpdate(id, model,{new: true})
         return{
             success: true,
-            message: "profile updated successfully",
+            message: "astrologer updated successfully",
             data: updatedProfile
         }
     } catch (error) {
@@ -85,5 +85,14 @@ export const toggleAvailabilityService = async(model)=>{
             success: false,
             message: error.message
         }
+    }
+}
+
+export const deleteService = async(id)=>{
+    try {
+    return await Astrologer.findByIdAndDelete(id)
+        
+    } catch (error) {
+        throw new Error(error.message)
     }
 }

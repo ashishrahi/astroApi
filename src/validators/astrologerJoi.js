@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const astrologerValidationSchema = Joi.object({
-    name: Joi.string().required,
+    name: Joi.string().required(),
     image: Joi.string().uri().optional(),
     specialties: Joi.array().items(Joi.string()).optional(),
     languages: Joi.array().items(Joi.string()).optional(),

@@ -15,7 +15,7 @@ import { StatusCodes } from 'http-status-codes';
 const app = express();
 import morgan from "morgan";
 import helmet from 'helmet';
-
+import cookieParser from 'cookie-parser';
 // Middlewares
 app.use(cors({
   origin: [
@@ -33,6 +33,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(helmet({
     contentSecurityPolicy: true,
     crossOriginEmbedderPolicy: false,
@@ -54,14 +55,14 @@ app.use((err, req, res, next)=>{
 
 
 // Routes
-app.use('/api/v1/country' ,countryRouter)
-app.use('/api/v1/state' ,stateRouter)
-app.use('/api/v1/city' ,cityRouter)
+app.use('/api/v1/countries' ,countryRouter)
+app.use('/api/v1/states' ,stateRouter)
+app.use('/api/v1/cities' ,cityRouter)
 app.use('/api/v1/users' ,userRouter);
 app.use('/api/v1/astrologers' ,astrologerRouter);
-app.use('/api/v1/astrologerservice' ,astrologerServiceRouter);
-app.use('/api/v1/booking' ,BookingRouter);
-app.use('/api/v1/kundali' ,KundaliRouter);
+app.use('/api/v1/services' ,astrologerServiceRouter);
+app.use('/api/v1/bookings' ,BookingRouter);
+app.use('/api/v1/kundalis' ,KundaliRouter);
 app.use('/api/v1/user-dashboard' ,userDashboardRouter);
 
 export default app;

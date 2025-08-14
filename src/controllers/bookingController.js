@@ -26,25 +26,15 @@ export const getBookings = async(req, res)=>{
     }
 }
 
-//  astrologerbooking
-export const getAstrologerBookings = async(req, res)=>{
-    try {
-        const model = req.params
-        const{success, message, data} = await bookingServices.getAstrologerBookings(model)
-        return res.status(StatusCodes.OK).json({success, message, data})
-    } catch (error) {
-         return res.status(StatusCodes.BAD_REQUEST).json({success: false, message: error.message})
-    }
-}
 
 // updatedbooking status
-export const updateBookingStatus = async (req, res) => {
+export const updateBooking = async (req, res) => {
   try {
-    const id = req.params.id;
-    const { status, paymentStatus } = req.body;
+    const id = req.params;
+    const payload = req.body;
 
 
-    const { success, message, data } = await bookingServices.updateBookingStatus({ id, status, paymentStatus });
+    const { success, message, data } = await bookingServices.updateBooking(id, payload );
 
     return res
       .status(success ? StatusCodes.OK : StatusCodes.NOT_FOUND)

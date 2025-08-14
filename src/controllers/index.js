@@ -1,7 +1,7 @@
-import { createAstrologer, getAstrologer, profileAstrologer, updateAstrologerProfile, toggleAvailability} from "../controllers/astrologerController.js"
-import {createAstrologerServices, getAstrologerServices, updatedAstrologerServices, deletedAstrologerServices } from '../controllers/astrologerServiceController.js'
-import {registerUsers, getUsers, loginUsers, profileUser, updateUser} from "../controllers/authController.js"
-import {createBooking, getBookings, getAstrologerBookings, updateBookingStatus} from '../controllers/bookingController.js'
+import { createAstrologer, getAstrologer, profileAstrologer, updateAstrologer, toggleAvailability, deleteAstrologers} from "../controllers/astrologerController.js"
+import {createAstrologerServicesList, getAstrologerServicesList, updatedAstrologerServicesList, deletedAstrologerServicesList } from '../controllers/astrologerServiceController.js'
+import {registerUsers, getUsers, loginUsers, updateUser,refreshTokenHandler} from "../controllers/authController.js"
+import {createBooking, getBookings, updateBooking} from '../controllers/bookingController.js'
 import {getUserKundlis,generateKundli} from '../controllers/kundaliController.js'
 import {getUserDashboard} from '../controllers/userDashboardController.js'
 import {createCountry, getCountry, updateCountry, deleteCountry} from '../controllers/countryController.js'
@@ -12,16 +12,17 @@ export const astrologerController = {
     createAstrologer: createAstrologer,
     getAstrologer: getAstrologer,
     profileAstrologer: profileAstrologer,
-    updateAstrologerProfile: updateAstrologerProfile,
+    updateAstrologer: updateAstrologer,
     toggleAvailability: toggleAvailability,
+    deleteAstrologers : deleteAstrologers
 }
 
 //  astrologerServiceController
 export const astrologerServiceController = { 
-    createAstrologerServices: createAstrologerServices,
-    getAstrologerServices: getAstrologerServices,
-    updatedAstrologerServices: updatedAstrologerServices,
-    deletedAstrologerServices: deletedAstrologerServices
+    createAstrologerServicesList: createAstrologerServicesList,
+    getAstrologerServicesList: getAstrologerServicesList,
+    updatedAstrologerServicesList: updatedAstrologerServicesList,
+    deletedAstrologerServicesList: deletedAstrologerServicesList
 }
 
 // userAuthentication
@@ -29,16 +30,15 @@ export const authenticationController = {
     registerUsers : registerUsers,
     getUsers: getUsers,
     loginUsers: loginUsers,
-    profileUser: profileUser,
-    updateUser : updateUser
+    updateUser : updateUser,
+    refreshTokenHandler: refreshTokenHandler
 }
 
 // bookingController
 export const bookingController = {
     createBooking: createBooking,
     getBookings: getBookings,
-    getAstrologerBookings: getAstrologerBookings,
-    updateBookingStatus: updateBookingStatus,
+    updateBooking: updateBooking,
 }
 
 // kundaliController
