@@ -30,7 +30,7 @@ export const getBookings = async(req, res)=>{
 // updatedbooking status
 export const updateBooking = async (req, res) => {
   try {
-    const id = req.params;
+    const {id} = req.params;
     const payload = req.body;
 
 

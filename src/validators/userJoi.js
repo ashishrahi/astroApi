@@ -12,4 +12,4 @@ export const userValidationSchema = Joi.object({
   role: Joi.string().valid("user", "astrologer", "admin").default("user"),
   token: Joi.string().optional(),
 
-})
+}).options({ stripUnknown: true });

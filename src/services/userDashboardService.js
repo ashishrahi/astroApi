@@ -6,16 +6,15 @@ import Wallet from "../models/walletModel.js";
 export const getDashboarUserService = async (model) => {
   try {
     const { id } = model;
-    console.log('userId:',id)
 
     // Fetch recent consultations (limit to 5)
-    const consultations = await Booking.find({ user: id })
-      .populate("astrologer", "name")
+    const consultations = await Booking.find({ userId: id })
+      .populate("astrologerId", "name")
       .sort({ date: -1 })
       .limit(5);
 
     // Fetch wallet transactions (limit to 5)
-    const wallet = await Wallet.find({ user: id })
+    const wallet = await Wallet.find({ userId: id })
       .sort({ date: -1 })
       .limit(5);
 
@@ -23,15 +22,15 @@ export const getDashboarUserService = async (model) => {
     const user = await User.findById(id).select("-password");
 
     // Compute dashboard stats
-    const totalConsultations = await Booking.countDocuments({ user: id });
+    const totalConsultations = await Booking.countDocuments({ userId: id });
 
     const averageRating = await Booking.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(id), rating: { $exists: true } } },
+      { $match: { userId: new mongoose.Types.ObjectId(id), rating: { $exists: true } } },
       { $group: { _id: null, avg: { $avg: "$rating" } } }
     ]);
 
     const totalMinutes = await Booking.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(id) } },
+      { $match: { userId: new mongoose.Types.ObjectId(id) } },
       {
         $group: {
           _id: null,

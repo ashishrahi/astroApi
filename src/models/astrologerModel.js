@@ -32,7 +32,7 @@ const astrologerSchema = new mongoose.Schema(
             },
     rating: { type: Number, default: 0 },
    status: {
-    type: String,
+    type: Boolean,
     default: true,
        },
   },

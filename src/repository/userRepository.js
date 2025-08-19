@@ -48,7 +48,7 @@ export const createUser = async (model) => {
   }
 };
 // update user
-export const UserUpdateQuery = async (model, id) => {
+export const UserUpdateQuery = async (id, model) => {
   try {
     if (!id) {
       throw new Error("userid is required for update");

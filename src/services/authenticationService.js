@@ -3,9 +3,13 @@ import { generateAccessToken, generateRefreshToken } from "../helpers/helpers.js
 import Wallet from "../models/walletModel.js";
 import { createUser, getUserQuery ,findUserByEmail, UserUpdateQuery } from "../repository/userRepository.js";
 import bcrypt from 'bcrypt'
+import logger from "../Config/logger.js";
 // RegisterUser service
 export const RegisterUserService = async (model) => {
   try {
+    
+
+
     const { email } = model;
 
     // validation
@@ -66,17 +70,17 @@ export const LoginUserService = async (model, res) => {
   try {
     const { email, password } = model;
     const userfind = await User.findOne({ email });
-console.log(userfind)
     if (!userfind) {
       return { success: false, message: "User not found. Please register." };
     }
+    console.log(userfind.status)
 
-    if (!userfind.status) {
+    if (userfind.status === false ) {
       return { success: false, message: "Your account is inactive. Please contact admin." };
     }
 
     const isMatch = await userfind.matchPassword(password);
-    if (!isMatch) {
+    if (isMatch === false) {
       return { success: false, message: "Invalid credentials" };
     }
 
@@ -90,15 +94,16 @@ console.log(userfind)
       tokenHash: refreshTokenHash,
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     });
+    console.log("refreshTokenHash", refreshTokenHash)
 
     await userfind.save();
 
     // Set refresh token in HTTP-only cookie
     res.cookie("rt", refreshTokenRaw, {
       httpOnly: true,
-      secure: true,         // HTTPS only
+      secure: process.env.NODE_ENV === "production",         // HTTPS only
       sameSite: "strict",   // Prevent CSRF
-      path: "/auth/refresh",
+      path: "/",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
@@ -121,62 +126,82 @@ console.log(userfind)
   }
 };
 
-export const refreshTokenHandlerService = async (model) => {
+export const refreshTokenHandlerService = async (refreshTokenRaw, res) => {
   try {
-    const refreshTokenRaw = model
     if (!refreshTokenRaw) {
       return { success: false, message: "Missing refresh token" };
     }
 
-    // Find user by refresh token hash
-    const user = await User.findOne({ "refreshTokens.revokedAt": { $exists: false } });
-    console.log('user:', user)
+    // Find all users that have any active refresh token
+    const users = await User.find({ "refreshTokens.0": { $exists: true } });
 
-    if (!user) {
-      return { success: false, message: "Invalid refresh token" }
+    let existUser = null;
+    let tokenIndex = -1;
+
+    // Compare hashed tokens
+    for (const user of users) {
+      const index = user.refreshTokens.findIndex(rt =>
+        !rt.revokedAt && bcrypt.compareSync(refreshTokenRaw, rt.tokenHash)
+      );
+      if (index !== -1) {
+        existUser = user;
+        tokenIndex = index;
+        break;
+      }
     }
 
-    const tokenIndex = user.refreshTokens.findIndex(rt =>
-      !rt.revokedAt && bcrypt.compareSync(refreshTokenRaw, rt.tokenHash)
-    );
-
-    if (tokenIndex === -1) {
-      // Token reuse detected — revoke all
-      user.refreshTokens.forEach(t => { t.revokedAt = new Date(); t.reason = "suspected-reuse"; });
-      await user.save();
-      return { success: false, message: "Token reuse detected" }
+    if (!existUser || tokenIndex === -1) {
+      return { success: false, message: "Invalid refresh token" };
     }
 
-    const currentToken = user.refreshTokens[tokenIndex];
+    const currentToken = existUser.refreshTokens[tokenIndex];
+
     if (currentToken.expiresAt < new Date()) {
       currentToken.revokedAt = new Date();
       currentToken.reason = "expired";
-      await user.save();
-      return { success: false, message: "Refresh token expired" }
+      await existUser.save();
+      return { success: false, message: "Refresh token expired" };
     }
 
-    // Rotate token
-    const newAccessToken = generateAccessToken(user._id);
-    const newRefreshTokenRaw = generateRefreshToken(user._id);
+    // Rotate tokens
+    const newAccessToken = generateAccessToken(existUser._id);
+    const newRefreshTokenRaw = generateRefreshToken(existUser._id);
     const newRefreshTokenHash = bcrypt.hashSync(newRefreshTokenRaw, 12);
 
+    // Revoke old token
     currentToken.revokedAt = new Date();
     currentToken.reason = "rotated";
 
-    user.refreshTokens.push({ tokenHash: newRefreshTokenHash, expiresAt: new Date(Date.now() + 30*24*60*60*1000) });
-    await user.save();
-
-    res.cookie("rt", newRefreshTokenRaw, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      path: "/auth/refresh",
-      maxAge: 30*24*60*60*1000,
+    // Add new refresh token
+    existUser.refreshTokens.push({
+      tokenHash: newRefreshTokenHash,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     });
 
-    return { success: true, accessToken: newAccessToken }
+    await existUser.save();
+
+    // Set refresh token cookie
+    res.cookie("rt", newRefreshTokenRaw, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/", // make available for all routes
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
+    return {
+      success: true,
+      message: "New token generated",
+      data: { accessToken: newAccessToken,
+    profile: {
+      _id: existUser._id,
+      name: existUser.name,
+      email: existUser.email,
+      role: existUser.role,
+    }, },
+    };
   } catch (err) {
-    return { success: false, message: err.message }
+    return { success: false, message: err.message };
   }
 };
 
@@ -185,10 +210,12 @@ export const refreshTokenHandlerService = async (model) => {
 
 
 
-export const updateUserService = async(model, id)=>{
-  try {
 
-      const updatedUser = await UserUpdateQuery(model, id)
+export const updateUserService = async(id, model)=>{
+  try {
+     console.log('update', model)
+
+      const updatedUser = await UserUpdateQuery(id, model)
       return{
         success: true,
         message: "user updated successfully",

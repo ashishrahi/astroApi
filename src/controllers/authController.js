@@ -6,13 +6,13 @@ export const registerUsers = async (req, res) => {
     const model = req.body;
     const { success, message, data } =
       await authenticationService.RegisterUserService(model);
-    return res.status(200).json({
+    return res.status(StatusCodes.CREATED).json({
       success,
       message,
       data,
     });
   } catch (error) {
-    res.status(500).json({ success: true, message: error.message });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
   }
 };
 
@@ -40,9 +40,9 @@ export const loginUsers = async (req, res) => {
     const model = req.body;
     const { success, message, data } =
       await authenticationService.LoginUserService(model,res);
-    return res.status(200).json({ success, message, data });
+    return res.status(StatusCodes.OK).json({ success, message, data });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
   }
 };
 
@@ -52,7 +52,7 @@ export const updateUser = async (req, res) => {
     const { id } = req.params;
     const model = req.body;
     const { success, message, data } =
-      await authenticationService.updateUserService(model, id);
+      await authenticationService.updateUserService(id, model);
     res.status(StatusCodes.OK).json({ success, message, data });
   } catch (error) {
     res
@@ -64,10 +64,11 @@ export const updateUser = async (req, res) => {
 export const refreshTokenHandler = async(req, res)=>{
   try {
     const model = req.cookies?.rt;
+    console.log("cppl", model)
     
     const { success, message, data } =
-      await authenticationService.refreshTokenHandlerService(model);
-    res.status(StatusCodes.OK).json({ success, message, data });
+      await authenticationService.refreshTokenHandlerService(model,res);
+    res.status(StatusCodes.OK).json({ success, message, data});
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

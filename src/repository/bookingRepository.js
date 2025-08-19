@@ -3,7 +3,6 @@ import Booking from "../models/bookingModel.js";
 export const BookingListQuery = async (model) => {
   try {
     const { status = "pending", search = "", page = 1, limit = 5 } = model;
-    console.log("search", search)
 
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);

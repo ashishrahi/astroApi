@@ -22,11 +22,11 @@ export const createAstrologerService = async(model)=>{
 
 export const getAstrologerService = async(model)=>{
     try {
-        const listAstrologer = await AstrologerListQuery(model)
+        const {data, total, page, pages} = await AstrologerListQuery(model)
         return{
             success: true,
             message: 'list of astrologer',
-            data: listAstrologer
+            data: data
         }
     } catch (error) {
         return{

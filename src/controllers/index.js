@@ -7,6 +7,7 @@ import {getUserDashboard} from '../controllers/userDashboardController.js'
 import {createCountry, getCountry, updateCountry, deleteCountry} from '../controllers/countryController.js'
 import {createState, getStates, updatedState, deleteStates} from '../controllers/stateController.js'
 import { createCity, getCity } from "./cityController.js"
+import { createReview, getReviewList} from './reviewController.js'
 //  astrologerController
 export const astrologerController = {
     createAstrologer: createAstrologer,
@@ -68,4 +69,8 @@ export const stateController = {
 export const cityController = {
     createCity : createCity,
     getCity : getCity
+}
+export const reviewController = {
+    createReview : createReview,
+    getReviewList : getReviewList
 }

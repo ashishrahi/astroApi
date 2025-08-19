@@ -16,4 +16,4 @@ export const astrologerValidationSchema = Joi.object({
     rating: Joi.number().min(0).max(5).optional(),
     status: Joi.string().valid("active", "inactive").optional(),
 
-})
+}).min(1);

@@ -67,8 +67,8 @@ export const getBookingService = async (model) => {
 export const updateBooking = async (id, payload) => {
   try {
     const {status, paymentStatus} = payload;
-    const booking = await Booking.findById(id);
-    if (!booking) {
+    const bookingUpdated = await Booking.findById(id);
+    if (!bookingUpdated) {
       return {
         success: false,
         message: "Booking not found",
@@ -76,15 +76,15 @@ export const updateBooking = async (id, payload) => {
     }
 
     // Update fields only if provided
-    if (status) booking.status = status;
-    if (paymentStatus) booking.paymentStatus = paymentStatus;
+    if (status) bookingUpdated.status = status;
+    if (paymentStatus) bookingUpdated.paymentStatus = paymentStatus;
 
-    await booking.save();
+    await bookingUpdated.save();
 
     return {
       success: true,
       message: "Booking status updated successfully",
-      data: booking,
+      data: bookingUpdated,
     };
   } catch (error) {
     console.error("Service Error in updateBookingStatus:", error);

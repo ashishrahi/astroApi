@@ -61,9 +61,10 @@ export const updateAstrologer = async (req, res) => {
   try {
     const { id } = req.params;
     const model = req.body;
+     console.log("Update payload:", model, "ID:", id);
 
     const { success, message, data } =
-      await astrologerService.updateAstrologerService(model, id);
+      await astrologerService.updateAstrologerService(id, model);
     res.status(201).json({
       success,
       message,
