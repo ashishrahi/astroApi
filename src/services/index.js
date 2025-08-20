@@ -8,7 +8,7 @@ import {createStateService, getStateService, updatedStateService, deleteStateSer
 import {createcityService, getCityService} from '../services/cityService.js'
 import { createServiceList, getServiceList, updateServiceList, deleteServiceList } from './ServiceListService.js'
 import { createReviewService, getReviewService} from './reviewService.js'
-
+import {createWalletService, getWalletService, updateWalletService} from './walletService.js'
 // astrologer services
 export const astrologerService = {
 
@@ -81,4 +81,10 @@ export const astrologerServiceListService = {
 export const reviewService = {
     createReviewService : createReviewService,
     getReviewService : getReviewService
+}
+
+export const walletService = {
+    createWalletService : createWalletService,
+    getWalletService : getWalletService,
+    updateWalletService : updateWalletService
 }

@@ -8,12 +8,12 @@ const walletTransactionSchema = new mongoose.Schema({
           },
   type: { 
      type: String, 
-     enum: ["recharge", "consultation"],
+     enum: ["credit", "consultation"],
      default:null 
         },
   amount: { 
      type: Number, 
-     default:null 
+     default:0
           },
   date: { 
      type: Date, 

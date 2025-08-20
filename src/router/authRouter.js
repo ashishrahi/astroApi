@@ -10,5 +10,9 @@ router.get('/' ,authenticationController.getUsers)
 router.post('/login' ,authenticationController.loginUsers)
 router.put('/update/:id' ,authenticationController.updateUser)
 router.get("/refresh", authenticationController.refreshTokenHandler);
+router.post("/logout", (req, res) => {
+  res.clearCookie("refreshToken");
+  return res.json({ success: true, message: "Logged out" });
+});
 
 export default router

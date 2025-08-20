@@ -11,6 +11,7 @@ import countryRouter from './src/router/countryRouter.js'
 import stateRouter from './src/router/stateRouter.js'
 import cityRouter from './src/router/cityRouter.js'
 import reviewRouter from './src/router/reviewRouter.js'
+import walletRouter from './src/router/walletRouter.js'
 import './src/Queue/worker/notification.worker.js';
 import { StatusCodes } from 'http-status-codes';
 const app = express();
@@ -65,6 +66,7 @@ app.use('/api/v1/astrologers' ,astrologerRouter);
 app.use('/api/v1/services' ,astrologerServiceRouter);
 app.use('/api/v1/bookings' ,BookingRouter);
 app.use('/api/v1/kundalis' ,KundaliRouter);
+app.use('/api/v1/wallets', walletRouter)
 app.use('/api/v1/reviews', reviewRouter)
 
 

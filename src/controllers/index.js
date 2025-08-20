@@ -8,6 +8,7 @@ import {createCountry, getCountry, updateCountry, deleteCountry} from '../contro
 import {createState, getStates, updatedState, deleteStates} from '../controllers/stateController.js'
 import { createCity, getCity } from "./cityController.js"
 import { createReview, getReviewList} from './reviewController.js'
+import {createWallet, getWallet, updateWallet} from './walletController.js'
 //  astrologerController
 export const astrologerController = {
     createAstrologer: createAstrologer,
@@ -73,4 +74,10 @@ export const cityController = {
 export const reviewController = {
     createReview : createReview,
     getReviewList : getReviewList
+}
+
+export const walletController = {
+    createWallet: createWallet,
+    getWallet : getWallet,
+    updateWallet : updateWallet
 }

@@ -6,7 +6,7 @@ const astrologerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image:{
+    image: {
       type: String,
     },
     specialties: [String],
@@ -15,26 +15,26 @@ const astrologerSchema = new mongoose.Schema(
       type: String,
     },
     chatRate: {
-      type: Number
-    },
-    callRate:{
-      type: Number
-    },
-    videoRate:{
       type: Number,
     },
-    experience:{
+    callRate: {
+      type: Number,
+    },
+    videoRate: {
+      type: Number,
+    },
+    experience: {
       type: Number,
     },
     isOnline: { type: String, enum: ["active", "inactive"], default: "active" },
     phone: {
-             type: String
-            },
+      type: String,
+    },
     rating: { type: Number, default: 0 },
-   status: {
-    type: Boolean,
-    default: true,
-       },
+    status: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

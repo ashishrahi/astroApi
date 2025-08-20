@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String,  },
     birthPlace:{type: String},
     birthDate:{type: String},
+    birthTime:{type: String},
      status: {
     type: Boolean,
     default: true,

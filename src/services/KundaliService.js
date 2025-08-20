@@ -1,10 +1,13 @@
 import axios from 'axios';
 import Kundli from '../models/kundliModel.js';
 import { getProkeralaToken } from '../utilities/prokeralaAuth.js';
+import User from '../models/userModel.js';
 
 export const generateKundaliService = async (model) => {
   try {
-    const { name, gender, dob, tob, lat, lon, timezone } = model;
+  const { name, gender, dob, tob, lat = "26.4499", lon = "80.3319", timezone = "Asia/Kolkata",userId } = model;
+  console.log('model', model)
+
 
     const token = await getProkeralaToken();
 
@@ -23,17 +26,24 @@ export const generateKundaliService = async (model) => {
         }
       }
     );
-
+ await User.findByIdAndUpdate(userId,{$set:{
+    birthDate: dob,
+    birthTime: tob,
+    birthPlace: "Kanpur",
+    
+ }},{ new: true })
     const savedKundli = await Kundli.create({
       name,
       gender,
-      dob,
-      tob,
-      lat,
-      lon,
-      timezone,
+      dateOfBirth:dob,
+      timeOfBirth:tob,
+      latitude:lat,
+      longitude : lon,
+      timeZone:timezone,
       kundliData: response.data
     });
+// update user
+
 
     return {
       success: true,
@@ -59,10 +69,21 @@ function getTimezoneOffsetString(timezone) {
 }
 
 
-export const getUserKundlisService =(req, res)=>{
-    try {
-        
-    } catch (error) {
-        
-    }
+export const getUserKundlisService = async(model)=>{
+   try {
+const kundaliList = await Kundli.find()
+    
+
+    return {
+      success: true,
+      message: 'Daily horoscope fetched & saved successfully',
+      data: kundaliList
+    };
+  } catch (error) {
+    console.error('🔴 Prokerala API Error:', error.response?.data || error.message);
+    return {
+      success: false,
+      message: error.response?.data?.message || error.message
+    };
+  }
 }
