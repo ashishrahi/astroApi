@@ -5,7 +5,7 @@ import { astrologerRepository, bookingRepository, chatRepository } from "../repo
 export const createBooking = async (payload) => {
   try {
     // checking booking
-    const savedBooking = bookingRepository.createBooking(payload);
+    const savedBooking = await bookingRepository.createBooking(payload);
 
     // checking astrologer
     const astrologerExist = await astrologerRepository.findAstrologerById(payload.astrologerId)
