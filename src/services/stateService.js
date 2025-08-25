@@ -1,25 +1,24 @@
+import logger from "../Config/logger.js";
 import {
-  findStateByNameQuery,
-  createStateQuery,
-  getStateQuery,
-  updatedStateQuery,
-} from "../repository/stateRepository.js";
+  stateRepository,
+} from "../repository/index.js";
 
 // createState
 export const createStateService = async (payload) => {
   try {
     const { stateName, stateCode, countryId } = payload;
     if (!stateName || !stateCode || !countryId) {
+      logger.error("stateName is required");
       new Error("filled required filled");
     }
-    const existingState = await findStateByNameQuery(stateName);
+    const existingState = await stateRepository.findStatebyName(payload);
     if (existingState) {
       return {
         success: true,
         message: "state already exists",
       };
     }
-    const newState = await createStateQuery(payload);
+    const newState = await stateRepository.createState(payload);
     return {
       success: true,
       message: "state created successfully",
@@ -36,19 +35,14 @@ export const createStateService = async (payload) => {
 // getState
 export const getStateService = async (payload) => {
   try {
-    const { page, limit, search = "" } = payload;
-    const result = await getStateQuery({
-      page: parseInt(page),
-      limit: parseInt(limit),
-      search,
-    });
+    const {states, total, page, totalPages} = await stateRepository.getStateList(payload);
     return {
       success: true,
       message: "list of states",
-      data: result.data,
-      total: result.total,
-      page: result.page,
-      totalPages: result.page,
+      data: states,
+      total: total,
+      page: page,
+      totalPages: totalPages,
     };
   } catch (error) {
     return {
@@ -59,14 +53,14 @@ export const getStateService = async (payload) => {
 };
 
 //  updatedStateService
-export const updatedStateService = async (payload) => {
+export const updatedStateService = async (payload, updatedData) => {
   try {
-    const id = payload;
-    const updatedData = req.body;
+    const {id} = payload;
     if (!id) {
+      logger.error("id not exist");
       new Error("state id is not correct");
     }
-    const result = await updatedStateQuery(id, updatedData);
+    const result = await stateRepository.updateState(id, updatedData);
     return {
       success: true,
       message: "state update successfully",
@@ -88,17 +82,17 @@ export const deleteStateService = async (payload) => {
       new Error("Id should be valid");
     }
 
-    const result = await updatedStateQuery(id);
+    const result = await stateRepository.updateState(id);
     if (result) {
-        return{
-            success: true,
-            message: "state updated successfully"
-        }
+      return {
+        success: true,
+        message: "state updated successfully",
+      };
     }
   } catch (error) {
-    return{
-        success: false,
-        message: error.message
-    }
+    return {
+      success: false,
+      message: error.message,
+    };
   }
 };

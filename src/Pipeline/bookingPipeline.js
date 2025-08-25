@@ -1,21 +1,9 @@
-
-export const reviewPipeline = async (payload) => 
-
- [
-      { $match: { status:payload.status } },
-
-    //   booking
-        { 
-        $lookup: {
-          from: "bookings",
-          localField: "bookingId",
-          foreignField: "_id",
-          as: "booking",
-        },
-      },
-      { $unwind: "$booking" },
+export const bookingListPipeline = ({ status, search = "" }, skip = 0, limitNumber = 5)=>
+     [
+      { $match: { status } },
+    
       //  join astrologer
-      { 
+      {
         $lookup: {
           from: "astrologers",
           localField: "astrologerId",
@@ -40,8 +28,9 @@ export const reviewPipeline = async (payload) =>
       {
         $match: {
           $or: [
-            { "user.name": { $regex: payload.search, $options: "i" } },
-            { "astrologer.name": { $regex: payload.search, $options: "i" } },
+            { "user.name": { $regex: search, $options: "i" } },
+            { "astrologer.name": { $regex: search, $options: "i" } },
+            { consultationType: { $regex: search, $options: "i" } },
           ],
         },
       },
@@ -51,9 +40,12 @@ export const reviewPipeline = async (payload) =>
         $project: {
           userName: "$user.name",
           astrologerName: "$astrologer.name",
-          booking: "$booking.purpose",
-          comment: 1
-
+          consultationType: 1,
+          date: 1,
+          time: 1,
+          purpose: 1,
+          paymentStatus: 1,
+          status: 1,
         },
       },
 
@@ -61,6 +53,6 @@ export const reviewPipeline = async (payload) =>
       { $sort: { date: -1 } },
 
       // Pagination
-      { $skip: payload.skip },
-      { $limit: payload.limitNumber },
+      { $skip: skip },
+      { $limit: limitNumber },
     ];

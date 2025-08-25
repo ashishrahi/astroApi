@@ -4,7 +4,7 @@ import {walletRepository} from '../repository/index.js'
 export const createWalletService = async(payload)=>{
     try {
         const result = await walletRepository.createWallet(payload);
-        return result
+        return result;
     } catch (error) {
       throw new Error(error.message)        
     }
@@ -12,8 +12,12 @@ export const createWalletService = async(payload)=>{
 // get
 export const getWalletService = async(payload)=>{
     try {
-        const result = await walletRepository.getListWallet(payload)
-        return result
+        const listWallet = await walletRepository.getWallet(payload)
+        return {
+            success: true,
+            message:"list of wallet fetch successfully",
+           data: listWallet
+        };
     } catch (error) {
         throw new Error(error.message)
     }

@@ -1,4 +1,4 @@
-import { createAstrologer, getAstrologer, profileAstrologer, updateAstrologer, toggleAvailability, deleteAstrologers} from "../controllers/astrologerController.js"
+import { createAstrologer, getAstrologer,  updateAstrologer, deleteAstrologers} from "../controllers/astrologerController.js"
 import {createAstrologerServicesList, getAstrologerServicesList, updatedAstrologerServicesList, deletedAstrologerServicesList } from '../controllers/astrologerServiceController.js'
 import {registerUsers, getUsers, loginUsers, updateUser,refreshTokenHandler} from "../controllers/authController.js"
 import {createBooking, getBookings, updateBooking} from '../controllers/bookingController.js'
@@ -6,16 +6,16 @@ import {getUserKundlis,generateKundli} from '../controllers/kundaliController.js
 import {getUserDashboard} from '../controllers/userDashboardController.js'
 import {createCountry, getCountry, updateCountry, deleteCountry} from '../controllers/countryController.js'
 import {createState, getStates, updatedState, deleteStates} from '../controllers/stateController.js'
-import { createCity, getCity } from "./cityController.js"
+import { createCity, getCity, updateCity } from "./cityController.js"
 import { createReview, getReviewList} from './reviewController.js'
 import {createWallet, getWallet, updateWallet} from './walletController.js'
+import { createNotificationController } from "./notificationController.js"
+
 //  astrologerController
 export const astrologerController = {
     createAstrologer: createAstrologer,
     getAstrologer: getAstrologer,
-    profileAstrologer: profileAstrologer,
     updateAstrologer: updateAstrologer,
-    toggleAvailability: toggleAvailability,
     deleteAstrologers : deleteAstrologers
 }
 
@@ -69,7 +69,8 @@ export const stateController = {
 
 export const cityController = {
     createCity : createCity,
-    getCity : getCity
+    getCity : getCity,
+    updateCity:updateCity
 }
 export const reviewController = {
     createReview : createReview,
@@ -80,4 +81,8 @@ export const walletController = {
     createWallet: createWallet,
     getWallet : getWallet,
     updateWallet : updateWallet
+}
+
+export const notificationController = {
+    createNotificationController : createNotificationController
 }

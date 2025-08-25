@@ -7,7 +7,7 @@ import { stateValidationSchema } from '../validators/stateJoi.js'
 
 router.post('/create',validate(stateValidationSchema) ,stateController.createState)
 router.get('/', stateController.getStates)
-router.put('/:id', stateController.updatedState)
-router.delete('/:id', stateController.deleteStates)
+router.put('/update/:id', stateController.updatedState)
+router.delete('/delete/:id', stateController.deleteStates)
 
 export default router

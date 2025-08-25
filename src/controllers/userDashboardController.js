@@ -1,11 +1,11 @@
+import { StatusCodes } from 'http-status-codes'
 import {userDashboardService} from '../services/index.js'
 
 export const getUserDashboard= async(req, res)=>{
 try {
-    const model = req.params
-    console.log("model:",model)
-    const {success, message, data} = await userDashboardService.getDashboarUserService(model)
-    return res.status(201).json({
+    const payload = req.body
+    const {success, message, data} = await userDashboardService.getDashboarUserService(payload)
+    return res.status(StatusCodes.OK).json({
         success,
         message,
         data

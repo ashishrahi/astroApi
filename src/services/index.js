@@ -1,22 +1,24 @@
-import {createAstrologerService, getAstrologerService, profileService, updateAstrologerService, toggleAvailabilityService, deleteService} from '../services/astrologerService.js'
+import {createAstrologerService, getAstrologerService, updateAstrologerService, deleteService} from '../services/astrologerService.js'
 import {RegisterUserService, UserListService, LoginUserService,  updateUserService, refreshTokenHandlerService } from '../services/authenticationService.js'
 import {createBooking, getBookingService,  updateBooking} from '../services/bookingService.js'
 import {generateKundaliService, getUserKundlisService} from '../services/KundaliService.js'
 import {getDashboarUserService} from '../services/userDashboardService.js'
 import {createCountryService, getCountryService, updateCountryService, deleteCountryService} from '../services/countryService.js'
 import {createStateService, getStateService, updatedStateService, deleteStateService} from '../services/stateService.js'
-import {createcityService, getCityService} from '../services/cityService.js'
+import {createcityService, getCityService, updateCityService} from '../services/cityService.js'
 import { createServiceList, getServiceList, updateServiceList, deleteServiceList } from './ServiceListService.js'
 import { createReviewService, getReviewService} from './reviewService.js'
 import {createWalletService, getWalletService, updateWalletService} from './walletService.js'
+import {createNotificationService} from './notificationService.js'
+
+
+
 // astrologer services
 export const astrologerService = {
 
     createAstrologerService: createAstrologerService,
     getAstrologerService: getAstrologerService,
-    profileService: profileService,
     updateAstrologerService: updateAstrologerService,
-    toggleAvailabilityService: toggleAvailabilityService,
     deleteService: deleteService
 }
 
@@ -68,7 +70,8 @@ export const stateService = {
 
 export const cityService = {
    createcityService : createcityService,
-   getCityService : getCityService
+   getCityService : getCityService,
+   updateCityService : updateCityService
 }
 
 export const astrologerServiceListService = {
@@ -87,4 +90,8 @@ export const walletService = {
     createWalletService : createWalletService,
     getWalletService : getWalletService,
     updateWalletService : updateWalletService
+}
+
+export const notificationService = {
+   createNotificationService : createNotificationService 
 }

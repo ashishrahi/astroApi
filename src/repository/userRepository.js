@@ -1,60 +1,72 @@
 import User from "../models/userModel.js";
 
-// findUserByEmail
-export const findUserByEmail = async (email) => {
-  try {
-    return await User.findOne({ email });
-  } catch (error) {
-    throw new Error(error.message)
-  }
-};
+export const authenticationRepository = {
+  registerUser: async (payload) => {
+    const newUser = new User({...payload});
+    const savedUser = await newUser.save();
+    return savedUser;
+  },
+  //  findbyId
+  findUserById: async(id)=>{
+    const existUser = await User.findById(id)
+    return existUser;
+  },
+  
+  //  findtoken
+  findToken: async()=>{
+   const existToken = await User.findOne({ "refreshTokens.0": { $exists: true } })
+   return existToken;
+  } ,
 
-// user list
-export const getUserQuery = async (model) => {
-  try {
-    const { page = 1, limit = 5 } = model; 
+  // findbyEmail
+  findUserByEmail: async (email) => {
+    const existUser = await User.findOne({ email });
+    return existUser;
+  },
+  //  getUserList
+  getUserList: async (payload) => {
+    const { page = 1, limit = 5 } = payload;
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
     const skip = (pageNumber - 1) * limitNumber;
 
-    const userlist = await User.find()
-      .skip(skip)
-      .limit(limitNumber)
-      .exec();
+    const userlist = await User.find().skip(skip).limit(limitNumber).exec();
     const total = await User.countDocuments();
-
-    return {
-      data :userlist,
+ 
+   return {
+      data: userlist,
       total,
       page: pageNumber,
       pages: Math.ceil(total / limitNumber),
     };
-  } catch (error) {
-    throw new Error(error.message);
+  },
+ updateUser: async (id, payload) => {
+  // Use passed id, or fallback to default userId
+  const userIdToUpdate = id || payload.userId; // or another default userId from context
+
+  if (!userIdToUpdate) {
+    throw new Error("User ID is required to update");
   }
+
+  const { dob, tob, birthPlace } = payload;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userIdToUpdate,
+    {
+      $set: {
+        birthDate: dob,
+        birthTime: tob,
+        birthPlace: birthPlace || "Kanpur",
+        name: payload.name,
+        email: payload.email,
+        phone: payload.phone
+      },
+    },
+    { new: true } // return the updated document
+  );
+
+  return updatedUser;
+}
+
 };
 
-
-// create user
-export const createUser = async (model) => {
-  try {
-    if (model.length > 0) {
-      throw new Error("user should not null")
-    }
-    const newUser = new User(model);
-    return await newUser.save();
-  } catch (error) {
-    throw new Error(`User created failed ${error.message}`)
-  }
-};
-// update user
-export const UserUpdateQuery = async (id, model) => {
-  try {
-    if (!id) {
-      throw new Error("userid is required for update");
-    }
-    return await User.findByIdAndUpdate(id, model, { new: true });
-  } catch (error) {
-    throw new Error(`User updated failed: ${error.message}`);
-  }
-};

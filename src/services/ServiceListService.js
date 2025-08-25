@@ -1,8 +1,8 @@
-import { serviceListRepository } from "../repository/index.js";
+import { serviceRepository } from "../repository/index.js";
 
 export const createServiceList = async(payload)=>{
 try {
-    const savedList = await serviceListRepository.CreateServiceListQuery(payload);
+    const savedList = await serviceRepository.createService(payload);
     return {
         success: true,
         message: "new service created successfully",
@@ -18,7 +18,7 @@ try {
 
 export const getServiceList = async(payload) => {
     try {
-        const serviceList = await serviceListRepository.GetServiceListQuery(payload);
+        const serviceList = await serviceRepository.getServiceList(payload);
         return{
              success: true,
              message: "list of service",
@@ -34,7 +34,7 @@ export const getServiceList = async(payload) => {
 
 export const updateServiceList = async(id,payload) =>{
     try {
-          const result = await serviceListRepository.updateListQuery(id,payload)
+          const result = await serviceRepository.updateServiceList(id,payload)
           return{
             success: true,
             message: "service list updated successfully",
@@ -51,7 +51,7 @@ export const updateServiceList = async(id,payload) =>{
 
 export const deleteServiceList = async(id) =>{
     try {
-        const result = await serviceListRepository.deleteServiceQuery(id)
+        const result = await serviceRepository.deleteService(id)
         return{
             success: true,
             message: "service deleted successfully"

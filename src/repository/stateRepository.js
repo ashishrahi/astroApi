@@ -1,37 +1,49 @@
 import State from "../models/stateModel.js";
 
-// findByState
-export const findStateByNameQuery = (name) => {
-  return State.findOne({
-    stateName: { $regex: new RegExp(`^{name}$`, "i") },
-  });
-};
+export const stateRepository = {
+  // create
+  createState: async (payload) => {
+    const newState = new State(payload);
+    const savedCountry = newState.save();
+    return savedCountry;
+  },
+  // getStateList
+  findState: async(query)=>{
+    const stateList = await State.find(query)
+    return stateList
+  },
 
-// createState
-export const createStateQuery = (payload) => {
-  const newState = new State(payload);
-  return newState.save();
-};
+  // get
+  findStatebyName: async (payload) => {
+    const { stateName } = payload;
+    const existState = State.findOne({
+      stateName: { $regex: new RegExp(`^{name}$`, "i") },
+    });
+    return existState;
+  },
+  // list of country
+  getStateList: async (payload) => {
+    const { page, limit, search = "" } = payload;
+   const  pageNumber = parseInt(page)
+   const   limitNumber = parseInt(limit)
+    const skip = (pageNumber - 1) * limitNumber;
+    const query = search ? { stateName: new RegExp(search, "i") } : {};
+    
+    const [states, total] = await Promise.all([
+      State.find(query).skip(skip).limit(limitNumber),
+      State.countDocuments(query),
+    ]);
 
-// getStates
-export const getStateQuery = async (payload) => {
-  const { page, limit, search = "" } = payload;
-  const skip = (page - 1) * limit;
-  const query = search ? { countryName: { $regex: search, $option: "i" } } : {};
-  const [states, total] = await Promise.all([
-    State.find(query).skip(skip).limit(limit),
-    State.countDocuments(query),
-  ]);
-  return {
-    data: states,
-    total: total,
-    page,
-    totalPages: Math.ceil(total / limit),
-  };
+     return {
+      states,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  },
+  // update state
+  updateState: async (id, updatedData) => {
+    const updatedState = await State.findByIdAndUpdate(id,updatedData ,{ new: true });
+    return updatedState
+  },
 };
-
-// updateStates
-export const updatedStateQuery = async(payload) => {
-const {id} = payload;
-return State.findByIdAndUpdate(id)
-}

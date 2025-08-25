@@ -2,6 +2,7 @@
 import { Queue } from "bullmq";
 import IORedis from "ioredis";
 import dotenv from 'dotenv';
+import logger from "../../Config/logger.js";
 dotenv.config();
 
 
@@ -10,9 +11,8 @@ export const connection = new IORedis({
   port: parseInt(process.env.REDIS_PORT || '6379'),
   maxRetriesPerRequest: null,
 });
-
-console.log('REDIS_HOST:', process.env.REDIS_HOST); // should be 'redis'
-console.log('REDIS_PORT:', process.env.REDIS_PORT); // should be '6379'
+logger.info('REDIS_HOST:', process.env.REDIS_HOST)
+logger.info('REDIS_PORT:', process.env.REDIS_PORT); // should be '6379'
 
 
 export const notificationQueue = new Queue("notification-queue", { connection });

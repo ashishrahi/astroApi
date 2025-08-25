@@ -3,17 +3,17 @@ import { astrologerService } from "../services/index.js";
 
 export const createAstrologer = async (req, res) => {
   try {
-    const model = req.body;
+    const payload = req.body;
 
     const { success, message, data } =
-      await astrologerService.createAstrologerService(model);
-    return res.status(201).json({
+      await astrologerService.createAstrologerService(payload);
+    return res.status(StatusCodes.CREATED).json({
       success,
       message,
       data,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: error.message,
     });
@@ -22,78 +22,44 @@ export const createAstrologer = async (req, res) => {
 
 export const getAstrologer = async (req, res) => {
   try {
-    const model = req.query;
+    const payload = req.query;
     const { success, message, data } =
-      await astrologerService.getAstrologerService(model);
-    return res.status(200).json({
+      await astrologerService.getAstrologerService(payload);
+    return res.status(StatusCodes.OK).json({
       success,
       message,
       data,
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success,
       message,
     });
   }
 };
 
-export const profileAstrologer = async (req, res) => {
-  try {
-    const model = req.params;
-    const { success, message, data } = await astrologerService.profileService(
-      model
-    );
-    res.status(200).json({
-      success,
-      message,
-      data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+
 
 export const updateAstrologer = async (req, res) => {
   try {
     const { id } = req.params;
-    const model = req.body;
-     console.log("Update payload:", model, "ID:", id);
+    const payload = req.body;
 
     const { success, message, data } =
-      await astrologerService.updateAstrologerService(id, model);
-    res.status(201).json({
+      await astrologerService.updateAstrologerService(id, payload);
+    res.status(StatusCodes.CREATED).json({
       success,
       message,
       data,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: error.message,
     });
   }
 };
 
-export const toggleAvailability = async (req, res) => {
-  try {
-    const model = req.params;
-    const { success, message, data } =
-      await astrologerService.toggleAvailabilityService(model);
-    res.status(201).json({
-      success,
-      message,
-    });
-  } catch (error) {
-    res.status(200).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
 
 export const deleteAstrologers = async( req, res)=>{
   try {

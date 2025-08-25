@@ -15,12 +15,14 @@ export const notificationWorker = new Worker(
       title,
       message,
       type,
-    });
+    }).toObject();;
     const io = getIO();
     if (io) {
-      io.to(userId).emit("notification", 
-      notification
-      );
+    io.to(userId.toString()).emit("notification", notification={
+      title:notification.title,
+      message: notification.message,
+      type: notification.type
+    });
     }
   },
   { connection }

@@ -18,7 +18,7 @@ export const createCountry = async (req, res) => {
 //  get country
 export const getCountry = async(req, res)=>{
     try {
-         const payload = req.query
+         const payload = req.body
          const{success, message, data, total, page, totalPages} = await countryService.getCountryService(payload)
          res.status(StatusCodes.OK).json({success, message, data, total, page, totalPages})
     } catch (error) {
@@ -30,7 +30,6 @@ export const getCountry = async(req, res)=>{
 export const updateCountry = async(req, res)=>{
     try {
         const payload = req.params
-        console.log("payload", payload)
         const updatedData = req.body
         const{success, message, data} = await countryService.updateCountryService(payload, updatedData)
         res.status(StatusCodes.OK).json({success, message, data})

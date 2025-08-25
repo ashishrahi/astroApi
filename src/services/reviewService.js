@@ -2,7 +2,7 @@ import { reviewRepository } from "../repository/index.js";
 
 export const createReviewService = async (payload) => {
   try {
-    const result = await reviewRepository.reviewCreateQuery(payload);
+    const result = await reviewRepository.createReview(payload);
     return {
         success: true,
         message: "review created successfully",
@@ -18,7 +18,7 @@ export const createReviewService = async (payload) => {
 
 export const getReviewService = async (payload) => {
   try {
-    const result = await reviewRepository.reviewGetQuery(payload);
+    const result = await reviewRepository.getReview(payload);
     return result;
   } catch (error) {
     return {

@@ -1,18 +1,18 @@
-import { createCityQuery, getCityQuery } from "../repository/cityRepository.js";
+import { cityRepository } from "../repository/index.js";
 
-export const createcityService = (payload) => {
+export const createcityService = async(payload) => {
   try {
     // validation
     const { cityName, cityCode, stateId, countryId } = payload;
     if (!cityName || !cityCode || !stateId || countryId) {
       new Error("filled required field");
     }
-    const newCity = createCityQuery(payload);
-    if (newCity) {
+    const savedCity = await cityRepository.createCity(payload);
+    if (savedCity) {
       return {
         success: true,
         message: "city created successfully",
-        data: newCity,
+        data: savedCity,
       };
     }
   } catch (error) {
@@ -25,7 +25,7 @@ export const createcityService = (payload) => {
 
 export const getCityService = async (payload) => {
   try {
-    const result = await getCityQuery(payload);
+    const result = await cityRepository.getCityList(payload);
     if (result) {
       return {
         success: true,
@@ -40,3 +40,15 @@ export const getCityService = async (payload) => {
     };
   }
 };
+
+export const updateCityService = async(id,payload) =>{
+try {
+  const result = await cityRepository.updateCity(id, payload)
+  return{
+    success: true,
+    message: "city updated successfully",
+    data: result
+  }
+} catch (error) {
+    throw new Error(error.message)
+}}

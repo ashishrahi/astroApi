@@ -1,45 +1,34 @@
-import Astrologer from "../models/astrologerModel.js";
-import Booking from "../models/bookingModel.js";
 import { notifyUser } from "../services/notificationService.js";
-import { ChatRoom } from "../models/ChatRoom.js";
-import { BookingListQuery } from "../repository/bookingRepository.js";
+import { astrologerRepository, bookingRepository, chatRepository } from "../repository/index.js";
 
-export const createBooking = async (model) => {
+
+export const createBooking = async (payload) => {
   try {
-    const booking = new Booking({ ...model });
+    // checking booking
+    const savedBooking = bookingRepository.createBooking(payload);
 
-    const astrologer = await Astrologer.findById(booking.astrologerId).select(
-     "name"
-    );
-
-    // Generate roomId based on booking ID
-    const roomId = `booking_${booking._id}`;
-
-    // ✅ Save roomId to booking
-    booking.roomId = roomId;
-
-    // Create chat room
-    await ChatRoom.create({
-      roomId,
-      bookingId: booking._id,
-      userId: booking.userId,
-      astrologerId: booking.astrologerId,
-    });
+    // checking astrologer
+    const astrologerExist = await astrologerRepository.findAstrologerById(payload.astrologerId)
+    if (!astrologerExist) {
+      return{
+        success: true,
+        message: "astrologer is not exist ! "
+      }
+    }
 
     // Notify user
     await notifyUser({
-      userId: booking.userId,
+      userId: payload.userId,
       title: "Consultation Booked",
       message: `Your consultation with astrologer is confirmed.`,
       type: "push",
     });
-    // Save the booking (after adding roomId)
-    await booking.save();
+    
 
     return {
       success: true,
       message: "booking created successfully",
-      data: booking,
+      data: savedBooking,
     };
   } catch (error) {
     return {
@@ -49,9 +38,9 @@ export const createBooking = async (model) => {
   }
 };
 
-export const getBookingService = async (model) => {
+export const getBookingService = async (payload) => {
   try {
-    const bookingList = await BookingListQuery(model);
+    const bookingList = await bookingRepository.getBookingList(payload);
     return {
       success: true,
       message: "list of booking",
@@ -66,20 +55,8 @@ export const getBookingService = async (model) => {
 
 export const updateBooking = async (id, payload) => {
   try {
-    const {status, paymentStatus} = payload;
-    const bookingUpdated = await Booking.findById(id);
-    if (!bookingUpdated) {
-      return {
-        success: false,
-        message: "Booking not found",
-      };
-    }
-
-    // Update fields only if provided
-    if (status) bookingUpdated.status = status;
-    if (paymentStatus) bookingUpdated.paymentStatus = paymentStatus;
-
-    await bookingUpdated.save();
+    // update booking
+    const bookingUpdated = await bookingRepository.updateBooking(id, payload);
 
     return {
       success: true,

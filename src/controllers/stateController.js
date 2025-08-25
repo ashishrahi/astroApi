@@ -29,7 +29,8 @@ export const getStates = async(req, res) =>{
 export const updatedState = async(req, res) =>{
     try {
         const payload = req.params;
-        const {success, message, data} = await stateService.updatedStateService(payload)
+        const updatedData = req.body
+        const {success, message, data} = await stateService.updatedStateService(payload, updatedData)
         res.status(StatusCodes.OK).json({success, message, data})
     } catch (error) {
         return{

@@ -3,9 +3,9 @@ import { authenticationService } from "../services/index.js";
 //  Registration of Users
 export const registerUsers = async (req, res) => {
   try {
-    const model = req.body;
+    const payload = req.body;
     const { success, message, data } =
-      await authenticationService.RegisterUserService(model);
+      await authenticationService.RegisterUserService(payload);
     return res.status(StatusCodes.CREATED).json({
       success,
       message,
@@ -20,9 +20,9 @@ export const registerUsers = async (req, res) => {
 
 export const getUsers = async (req, res) => {
   try {
-    const model = req.query;
+    const payload = req.query;
     const { success, message, data, total, page, pages } =
-      await authenticationService.UserListService(model);
+      await authenticationService.UserListService(payload);
     return res
       .status(StatusCodes.OK)
       .json({ success, message, data, total, page, pages });
@@ -37,9 +37,9 @@ export const getUsers = async (req, res) => {
 
 export const loginUsers = async (req, res) => {
   try {
-    const model = req.body;
+    const payload = req.body;
     const { success, message, data } =
-      await authenticationService.LoginUserService(model,res);
+      await authenticationService.LoginUserService(payload,res);
     return res.status(StatusCodes.OK).json({ success, message, data });
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
@@ -50,9 +50,9 @@ export const loginUsers = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const model = req.body;
+    const payload = req.body;
     const { success, message, data } =
-      await authenticationService.updateUserService(id, model);
+      await authenticationService.updateUserService(id, payload);
     res.status(StatusCodes.OK).json({ success, message, data });
   } catch (error) {
     res
@@ -63,11 +63,10 @@ export const updateUser = async (req, res) => {
 
 export const refreshTokenHandler = async(req, res)=>{
   try {
-    const model = req.cookies?.rt;
-    console.log("cppl", model)
+    const payload = req.cookies?.rt;
     
     const { success, message, data } =
-      await authenticationService.refreshTokenHandlerService(model,res);
+      await authenticationService.refreshTokenHandlerService(payload, res);
     res.status(StatusCodes.OK).json({ success, message, data});
   } catch (error) {
     res

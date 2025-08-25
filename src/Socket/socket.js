@@ -1,5 +1,6 @@
 // src/utilities/socket.js
 import { Server } from "socket.io";
+import logger from "../Config/logger.js";
 
 let io;
 
@@ -12,22 +13,28 @@ export function setupSocket(server) {
     const {userId} = socket.handshake.query;
     if (userId) {
       socket.join(userId.toString());
-      console.log(`🔌 User connected: ${userId}`);
+      logger.info(`🔌 User connected: ${userId}`);
     }
 
       // ✉️ Receive message and broadcast
     socket.on("send-message", (msg) => {
       const { roomId } = msg;
       if (roomId) {
-        console.log('msg',msg)
         io.to(roomId).emit("receive-message", msg);
-        console.log(`📨 Message sent to room ${roomId}`);
+        logger.info(`📨 Message sent to room ${roomId}`);
       }
     });
 
+      // 🔔 Send test notification to user after connect (for debugging)
+    if (userId) {
+      io.to(userId.toString()).emit("notification", {
+        title: "Welcome!",
+        message: `Hello, Have a great day`,
+      });
+    }
 
     socket.on("disconnect", () => {
-      console.log("❌ User disconnected");
+      logger.info("❌ User disconnected");
     });
   });
 }

@@ -1,22 +1,24 @@
 import Review from '../models/reviewModel.js'
 import { reviewPipeline } from '../Pipeline/reviewPipeline.js'
 
-export const reviewCreateQuery = async(payload) =>{
-    try {
+
+export const reviewRepository = {
+    // create Review
+    createReview: async(payload)=>{
         const newReview = new Review(payload)
         const savedReview = newReview.save()
-        return savedReview
-    } catch (error) {
-        throw new Error(error.message)
-        
+        return savedReview;
+    },
+    // find Review
+    getReview: async(payload)=>{
+        const result = Review.aggregate(reviewPipeline(payload))
+        return result;
+    },
+    // update Review
+    updateReview: async(id, payload)=>{
+        const updatedReview = await Review.findByIdAndUpdate(id, payload)
+        return updatedReview
     }
 }
 
-export const reviewGetQuery = async(payload) =>{
-    try {
-        const result = await reviewPipeline(payload)
-        return result
-    } catch (error) {
-        throw new Error(error.message)
-    }
-}
+

@@ -7,6 +7,6 @@ import { countrySchemaValidation } from '../validators/countryJoi.js'
 
 router.post('/create', validate(countrySchemaValidation) ,countryController.createCountry)
 router.get('/', countryController.getCountry)
-router.put('/:id', countryController.updateCountry)
+router.put('/update/:id', countryController.updateCountry)
 router.delete('/:id', countryController.deleteCountry)
 export default router

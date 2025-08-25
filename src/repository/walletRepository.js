@@ -1,29 +1,29 @@
 import Wallet from "../models/walletModel.js";
 import {WalletPipeline} from '../Pipeline/walletPipleline.js'
 
-// create
-export const createWallet = async({user ,amount = 0})=>{
-try {
+
+export const walletRepository = {
+  // create
+  createWallet: async({user, amount = 0})=>{
     const newWallet = new Wallet({user, amount})
-    const savedWallet = await newWallet.save()
-    return savedWallet
-} catch (error) {
-    throw error;
-}}
-// get
-export const getListWallet = async( payload)=>{
-    try {
-        const listWallet = await WalletPipeline(payload)
-        return listWallet
-    } catch (error) {
-        throw new Error(error.message)
-    }
-}
-// update
-export const updateWallet = async (id, payload) => {
-  try {
-   
-    const updateData = {};
+    const savedWallet = newWallet.save();
+    return savedWallet;
+  },
+  // get
+  getWallet: async(payload)=>{
+    const listWallet = await Wallet.aggregate(WalletPipeline(payload))
+      return listWallet
+  },
+
+  // find wallet repository
+  findWalletById: async(payload)=>{
+   const walletExist = await Wallet.findById({ userId: id})
+   return walletExist;
+  },
+
+  // update
+  updateWallet: async(id, payload)=>{
+     const updateData = {};
     if (payload.type) updateData.type = payload.type;
     if (payload.status) updateData.status = payload.status;
     if (payload.amount) updateData.amount = Number(payload.amount); 
@@ -38,8 +38,7 @@ export const updateWallet = async (id, payload) => {
       throw new Error("Wallet not found");
     }
 
-    return { success: true,message:"updated successfully" ,data: updatedWallet };
-  } catch (error) {
-    return { success: false, message: error.message };
+    return  updatedWallet
   }
-};
+}
+

@@ -1,25 +1,22 @@
 import logger from "../Config/logger.js";
 import {
-  createCountry,
-  findCountryByName,
-  getCountries,
-  updatedCountry,
-  deletedCountry,
-} from "../repository/countryRepository.js";
+  countryRepository,
+} from "../repository/index.js";
 
 //  create Country
 export const createCountryService = async (payload) => {
   try {
     const { countryName, countryCode } = payload;
-    logger.info(`Received payload: ${JSON.stringify(payload)}`);
 
     if (!countryName || !countryCode) {
+      logger.error("country validation failed")
       throw new Error("Country name and code are required");
     }
 
     // check if country already exist
 
-    const isCountry = await findCountryByName(countryName);
+    const isCountry = await countryRepository.findCountrybyName({countryName:payload.countryName})
+
     if (isCountry) {
       logger.warn(`Duplicate country detected: ${countryName}`);
       return {
@@ -27,7 +24,7 @@ export const createCountryService = async (payload) => {
         message: "country already exists",
       };}
 
-    const newCountry = await createCountry({ countryName, countryCode });
+    const newCountry = await countryRepository.createCountry(payload);
     logger.info(`Country created: ${newCountry._id}`);
 
     return {
@@ -51,7 +48,7 @@ export const getCountryService = async (payload) => {
   try {
     const { page, limit, search = '' } = payload;
 
-    const result = await getCountries({
+    const result = await countryRepository.getCountryList({
       page: parseInt(page),
       limit: parseInt(limit),
       search,
@@ -80,12 +77,13 @@ export const updateCountryService = async (payload, updatedData) => {
     if (!id) {
       throw new Error("Country Id is required");
     }
-    const updateCountry = await updatedCountry(id, updatedData);
+    const updatedCountry = await countryRepository.updatedCountry(id, updatedData);
+
     if (updatedCountry) {
       return {
         success: true,
         message: "country updated successfully",
-        data: updateCountry,
+        data: updatedCountry,
       };
     }
   } catch (error) {
@@ -100,7 +98,7 @@ export const updateCountryService = async (payload, updatedData) => {
 export const deleteCountryService = async (payload) => {
   try {
     const id = payload;
-    const isdeleteCountry = await deletedCountry(id);
+    const isdeleteCountry = await countryRepository.deletedCountry(id);
     if (isdeleteCountry) {
       return {
         success: true,

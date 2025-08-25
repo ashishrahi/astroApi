@@ -14,6 +14,7 @@ import reviewRouter from './src/router/reviewRouter.js'
 import walletRouter from './src/router/walletRouter.js'
 import './src/Queue/worker/notification.worker.js';
 import { StatusCodes } from 'http-status-codes';
+import notificationRouter from './src/router/notificationRouter.js'
 const app = express();
 import morgan from "morgan";
 import helmet from 'helmet';
@@ -27,7 +28,7 @@ app.use(cors({
     "http://127.0.0.1:5500",
     "https://astroapi-1.onrender.com",
     "http://localhost:5174",
-     "https://client-astro-bc8f.vercel.app"
+     "https://client-astro-bc8f.vercel.app",
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
@@ -57,7 +58,6 @@ app.use((err, req, res, next)=>{
 
 
 // Routes
-app.use('/api/v1/user-dashboard' ,userDashboardRouter);
 app.use('/api/v1/countries' ,countryRouter)
 app.use('/api/v1/states' ,stateRouter)
 app.use('/api/v1/cities' ,cityRouter)
@@ -65,9 +65,12 @@ app.use('/api/v1/users' ,userRouter);
 app.use('/api/v1/astrologers' ,astrologerRouter);
 app.use('/api/v1/services' ,astrologerServiceRouter);
 app.use('/api/v1/bookings' ,BookingRouter);
+app.use('/api/v1/notifications', notificationRouter)
 app.use('/api/v1/kundalis' ,KundaliRouter);
 app.use('/api/v1/wallets', walletRouter)
 app.use('/api/v1/reviews', reviewRouter)
+app.use('/api/v1/user-dashboard',userDashboardRouter);
+
 
 
 export default app;

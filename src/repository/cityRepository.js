@@ -1,64 +1,40 @@
 import City from "../models/cityModel.js";
+import { cityPipeline } from "../Pipeline/cityPipeline.js";
 
-// create City
-export const createCityQuery = async (payload) => {
-  try {
+
+
+export const cityRepository = {
+  //  create
+   createCity: async(payload)=>{
     const newCity = new City(payload);
-    return await newCity.save();
-  } catch (error) {
-    return error.message;
-  }};
-  
-// getCity
-export const getCityQuery = async (payload) => {
-  try {
+    const savedCity = await newCity.save()
+    return savedCity;
+   },
+  //  get
+   getCityList : async(payload) =>{
     const { stateId, countryId, cityName, skip, limit } = payload;
 
     // validation
 
     const matchStage = {};
-    if (stateId) {
-      matchStage.stateId = new mongoose.Types.ObjectId(stateId);
-    }
+    // if (stateId) {
+    //   matchStage.stateId = new mongoose.Types.ObjectId(stateId);
+    // }
 
-    if (countryId) {
-      matchStage.countryId = new mongoose.Types.ObjectId(countryId);
-    }
+    // if (countryId) {
+    //   matchStage.countryId = new mongoose.Types.ObjectId(countryId);
+    // }
 
-    if (cityName) {
-      matchStage.cityName = { $regex: cityName, $options: "i" };
-    }
+    // if (cityName) {
+    //   matchStage.cityName = { $regex: cityName, $options: "i" };
+    // }
+   const cities = await City.aggregate(cityPipeline(matchStage={}))
+   return cities;
+   },
+   updateCity: async(id, payload)=>{
+    const updatedCity = await City.findByIdAndUpdate(id, payload)
+    return updatedCity;
+   }
+   
+}
 
-    // Pipeline
-    const pipeline = [
-      { $match: matchStage },
-      {
-        $lookup: {
-          from: "states",
-          localfield: "stateId",
-          foreignField: "_id",
-          as: "state",
-        },
-      },
-      {
-        $unwind: { path: "$state", preserveNullAndEmptyArrays: true },
-      },
-      {
-        $lookup: {
-          from: "countries",
-          localfield: "countryId",
-          foreignField: "_id",
-          as: "country",
-        },
-      },
-      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
-      { $skip: Number(skip) },
-      { $limit: Number(limit) },
-    ];
-
-    const cities = await City.aggregate(pipeline);
-    return cities;
-  } catch (error) {
-    return error.message;
-  }
-};

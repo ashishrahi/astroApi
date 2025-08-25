@@ -1,69 +1,51 @@
 import mongoose from "mongoose";
 import Booking from "../models/bookingModel.js";
-import User from "../models/userModel.js";
-import Wallet from "../models/walletModel.js";
+import { authenticationRepository } from "../repository/userRepository.js";
+import { bookingRepository } from "../repository/bookingRepository.js";
+import { walletRepository } from "../repository/walletRepository.js";
 
-export const getDashboarUserService = async (model) => {
+export const getDashboarUserService = async (payload ={}) => {
   try {
-    const { id } = model;
+    const { id } = payload;
 
     // Fetch recent consultations (limit to 5)
-    const consultations = await Booking.find({ userId: id })
+    const consultations = await bookingRepository.findBookingById({ userId: id })
       .populate("astrologerId", "name")
       .sort({ date: -1 })
       .limit(5);
 
     // Fetch wallet transactions (limit to 5)
-    const wallet = await Wallet.find({ userId: id })
-      .sort({ date: -1 })
-      .limit(5);
+    const wallet = await walletRepository.findWalletById({ userId: id }).sort({ date: -1 }).limit(5);
 
     // Fetch user profile
-    const user = await User.findById(id).select("-password");
+    const user = await authenticationRepository.findUserById(id).select("-password");
 
-    // Compute dashboard stats
-    const totalConsultations = await Booking.countDocuments({ userId: id });
-
-    const averageRating = await Booking.aggregate([
-      { $match: { userId: new mongoose.Types.ObjectId(id), rating: { $exists: true } } },
-      { $group: { _id: null, avg: { $avg: "$rating" } } }
-    ]);
-
-    const totalMinutes = await Booking.aggregate([
-      { $match: { userId: new mongoose.Types.ObjectId(id) } },
-      {
-        $group: {
-          _id: null,
-          totalMinutes: {
-            $sum: {
-              $toInt: {
-                $arrayElemAt: [{ $split: ["$duration", " "] }, 0]
-              }
-            }
-          }
-        }
-      }
-    ]);
+    //  total consultation
+    const totalConsultations = await bookingRepository.countBooking({ userId: id });
+    //  average rating
+    const averageRating = await bookingRepository.averageRating(payload);
+    //  total minutes
+    const totalMinutes = await bookingRepository.averageRating(payload)
 
     // Send combined response
     return {
       success: true,
       message: "dashboard data",
-      data:{
-      profile: user,
-      consultations,
-      wallet,
-      stats: {
-        totalConsultations,
-        avgRating: averageRating[0]?.avg || 0,
-        totalHours: ((totalMinutes[0]?.totalMinutes || 0) / 60).toFixed(1)
-      }}
-      
+      data: {
+        profile: user,
+        consultations,
+        wallet,
+        stats: {
+          totalConsultations,
+          avgRating: averageRating[0]?.avg || 0,
+          totalHours: ((totalMinutes[0]?.totalMinutes || 0) / 60).toFixed(1),
+        },
+      },
     };
   } catch (error) {
     return {
       success: false,
-      message: error.message
+      message: error.message,
     };
   }
 };

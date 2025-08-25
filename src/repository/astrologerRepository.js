@@ -1,21 +1,25 @@
 import Astrologer from "../models/astrologerModel.js";
 
-// create astrologers
-export const createAstrologerQuery = async (model) => {
-  try {
-    const newAstrologer = new Astrologer(model);
-    const savedAstrologer = await newAstrologer.save();
-
+export const astrologerRepository = {
+  
+  // create
+  createAstrologer: async(payload)=>{
+    const newAstrologer = new Astrologer(payload);
+    const savedAstrologer = newAstrologer.save()
     return savedAstrologer
-  } catch (error) {
-    throw new Error(error.message);
-  }
-};
+  },
 
-// list astrologers
-export const AstrologerListQuery = async (model) => {
-  try {
-    const { page = 1, limit = 5 } = model;
+  // findbyId
+  findAstrologerById : async(id)=>{
+    const existAstrologer = await Astrologer.findById(id);
+    return existAstrologer;
+  },
+
+
+  // getastrologer
+
+    getAstrologerList: async(payload)=>{
+    const { page = 1, limit = 5 } = payload;
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
     const skip = (pageNumber - 1) * limitNumber;
@@ -30,7 +34,23 @@ export const AstrologerListQuery = async (model) => {
       page: pageNumber,
       pages: Math.ceil(total / limitNumber),
     };
-  } catch (error) {
-    throw new Error(error.message);
+  },
+  
+  // update
+  updateAstrologer: async(id, payload) =>{
+    const updatedAstrologer = await Astrologer.findByIdAndUpdate(id, payload, {new:true})
+    return updatedAstrologer;
+  },
+
+  // delete
+  deleteAstrologer: async(id)=>{
+    const deletedAstrologer = await Astrologer.findByIdAndDelete(id)
+    return deletedAstrologer
   }
-};
+ }
+
+
+
+
+
+

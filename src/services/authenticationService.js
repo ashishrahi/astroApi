@@ -1,19 +1,14 @@
-import User from "../models/userModel.js";
 import { generateAccessToken, generateRefreshToken } from "../helpers/helpers.js";
 import Wallet from "../models/walletModel.js";
-import { createUser, getUserQuery ,findUserByEmail, UserUpdateQuery } from "../repository/userRepository.js";
 import bcrypt from 'bcrypt'
 import logger from "../Config/logger.js";
+import { authenticationRepository } from "../repository/index.js";
+import User from "../models/userModel.js";
 // RegisterUser service
-export const RegisterUserService = async (model) => {
+export const RegisterUserService = async (payload) => {
   try {
-    
-
-
-    const { email } = model;
-
     // validation
-    const userExists = await findUserByEmail(email);
+    const userExists = await authenticationRepository.findUserByEmail(payload.email);
     if (userExists) {
       return {
         success: false,
@@ -21,7 +16,7 @@ export const RegisterUserService = async (model) => {
       };
     }
     // create User
-    const newUser = await createUser(model);
+    const newUser = await authenticationRepository.registerUser(payload);
     // create wallet of User
     const newWallet =  new Wallet({ userId: newUser._id });
     newWallet.save()
@@ -45,9 +40,9 @@ export const RegisterUserService = async (model) => {
 };
 
 // UserList service
-export const UserListService = async (model) => {
+export const UserListService = async (payload) => {
   try {
-    const {data, total, page, pages} = await getUserQuery(model);
+    const {data, total, page, pages} = await authenticationRepository.getUserList(payload);
     return {
       success: true,
       message: "user list fetch successfully",
@@ -66,37 +61,36 @@ export const UserListService = async (model) => {
 
 
 // Login user service
-export const LoginUserService = async (model, res) => {
+export const LoginUserService = async (payload, res) => {
   try {
-    const { email, password } = model;
-    const userfind = await User.findOne({ email });
-    if (!userfind) {
+    const { email, password } = payload;
+    const existUser = await authenticationRepository.findUserByEmail(email);
+    if (!existUser) {
+      logger.error("user not fined")
       return { success: false, message: "User not found. Please register." };
     }
-    console.log(userfind.status)
 
-    if (userfind.status === false ) {
+    if (existUser.status === false ) {
       return { success: false, message: "Your account is inactive. Please contact admin." };
     }
 
-    const isMatch = await userfind.matchPassword(password);
+    const isMatch = await existUser.matchPassword(password);
     if (isMatch === false) {
       return { success: false, message: "Invalid credentials" };
     }
 
     // Generate tokens
-    const accessToken = generateAccessToken(userfind._id);
-    const refreshTokenRaw = generateRefreshToken(userfind._id);
+    const accessToken = generateAccessToken(existUser._id);
+    const refreshTokenRaw = generateRefreshToken(existUser._id);
 
     // Hash refresh token before saving
     const refreshTokenHash = bcrypt.hashSync(refreshTokenRaw, 12);
-    userfind.refreshTokens.push({
+    existUser.refreshTokens.push({
       tokenHash: refreshTokenHash,
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     });
-    console.log("refreshTokenHash", refreshTokenHash)
 
-    await userfind.save();
+    await existUser.save();
 
     // Set refresh token in HTTP-only cookie
     res.cookie("rt", refreshTokenRaw, {
@@ -111,10 +105,10 @@ export const LoginUserService = async (model, res) => {
       success: true,
       message: "User successfully logged in",
       data: {
-        _id: userfind._id,
-        name: userfind.name,
-        email: userfind.email,
-        role: userfind.role,
+        _id: existUser._id,
+        name: existUser.name,
+        email: existUser.email,
+        role: existUser.role,
         accessToken,
       },
     };
@@ -211,11 +205,10 @@ export const refreshTokenHandlerService = async (refreshTokenRaw, res) => {
 
 
 
-export const updateUserService = async(id, model)=>{
+export const updateUserService = async(id, payload)=>{
   try {
-     console.log('update', model)
 
-      const updatedUser = await UserUpdateQuery(id, model)
+      const updatedUser = await authenticationRepository.updateUser(id, payload)
       return{
         success: true,
         message: "user updated successfully",
